@@ -21,5 +21,8 @@ CREATE TABLE "players" (
     CONSTRAINT "players_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE UNIQUE INDEX "lobbies_room_code_key" ON "lobbies"("room_code");
+
 -- AddForeignKey
 ALTER TABLE "players" ADD CONSTRAINT "players_lobby_id_fkey" FOREIGN KEY ("lobby_id") REFERENCES "lobbies"("id") ON DELETE SET NULL ON UPDATE CASCADE;

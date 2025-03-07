@@ -1,14 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
-import { LobbyType } from 'types/lobby';
+import { LobbyRoomCodeType, LobbyCreateType } from 'types/lobby';
 
 @Injectable()
 export class LobbyRepository {
   constructor(protected prismaService: PrismaService) {}
 
-  async create(data: LobbyType) {
+  async create(data: LobbyCreateType) {
     return await this.prismaService.lobby.create({
       data: { id: data.id, room_code: data.room_code },
+    });
+  }
+
+  async getWithPlayer(data: LobbyRoomCodeType) {
+    return await this.prismaService.lobby.findUnique({
+      where: { room_code: data.room_code },
+      include: { players: true },
+    });
+  }
+
+  async findOne(data: LobbyRoomCodeType) {
+    return await this.prismaService.lobby.findUniqueOrThrow({
+      where: { room_code: data.room_code },
     });
   }
 }
