@@ -17,6 +17,12 @@ export class PlayerRepository {
     });
   }
 
+  async countPlayerInLobby(lobby_id: string) {
+    return await this.prismaService.player.count({
+      where: { lobby_id, deleted_at: null },
+    });
+  }
+
   async softDelete(id: string) {
     return await this.prismaService.player.update({
       where: { id },

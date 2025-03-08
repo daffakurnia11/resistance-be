@@ -51,25 +51,40 @@ export class LobbyService {
     const lobby = await this.lobbyRepository.findOne({
       room_code: data.room_code,
     });
-    if (!lobby) {
-      throw new Error('Lobby not found');
+    const playerCount = await this.playerRepository.countPlayerInLobby(
+      lobby.id,
+    );
+
+    if (playerCount < 5) {
+      const playerId = uuidv7();
+      const player = await this.playerRepository.create({
+        id: playerId,
+        name: data.name,
+        lobby_id: lobby.id,
+        room_role: 'MEMBER',
+      });
+      await this.updateSocket(data.room_code);
+      return {
+        lobby,
+        player,
+      };
+    } else {
+      return {
+        statusCode: 400,
+        success: false,
+        message: 'Oops! The lobby has been full.',
+      };
     }
-    const playerId = uuidv7();
-    const player = await this.playerRepository.create({
-      id: playerId,
-      name: data.name,
-      lobby_id: lobby.id,
-      room_role: 'MEMBER',
-    });
-    await this.updateSocket(data.room_code);
-    return {
-      lobby,
-      player,
-    };
   }
 
   async leave(data: { room_code: string; player_id: string }) {
     await this.playerRepository.softDelete(data.player_id);
     await this.updateSocket(data.room_code);
+    return {
+      statusCode: 204,
+      success: true,
+      message: 'No Content',
+      data: null,
+    };
   }
 }

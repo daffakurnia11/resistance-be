@@ -11,10 +11,18 @@ import { Observable } from 'rxjs';
 export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
-      map((data: unknown) => {
+      map((data: any) => {
         const response = context.switchToHttp().getResponse();
         const statusCode = response.statusCode;
 
+        if (data.statusCode) {
+          return {
+            statusCode: data.statusCode || 500,
+            success: data.success || false,
+            message: data.message || 'Internal Server Error',
+            data: data.data,
+          };
+        }
         return {
           statusCode,
           success: statusCode >= 200 && statusCode < 300,

@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Post,
   Query,
@@ -37,7 +36,7 @@ export class LobbyController {
     return await this.lobbyService.get({ room_code });
   }
 
-  @Delete('leave')
+  @Post('leave')
   @ApiBody({ type: LeaveLobbyDto })
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async leave(@Body() body: LeaveLobbyDto) {
