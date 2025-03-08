@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger/dist/decorators/api-body.decorator';
 import { LobbyService } from '../service/lobby.service';
 import { CreateLobbyDto, JoinLobbyDto } from '../dto/lobby.dto';
@@ -11,12 +19,14 @@ export class LobbyController {
 
   @Post()
   @ApiBody({ type: CreateLobbyDto })
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async create(@Body() body: CreateLobbyDto) {
     return await this.lobbyService.create(body);
   }
 
   @Post('join')
   @ApiBody({ type: JoinLobbyDto })
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async join(@Body() body: JoinLobbyDto) {
     return await this.lobbyService.join(body);
   }
