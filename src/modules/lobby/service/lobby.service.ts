@@ -37,10 +37,7 @@ export class LobbyService {
       room_code: room_code,
     });
     this.lobbyGateway.server.emit('join_lobby', room_code);
-    this.lobbyGateway.server.emit('lobby_update', {
-      room_code: updatedLobby?.room_code,
-      players: updatedLobby?.players,
-    });
+    this.lobbyGateway.server.emit('lobby_update', updatedLobby);
   }
 
   async join(data: { room_code: string; name: string }) {
