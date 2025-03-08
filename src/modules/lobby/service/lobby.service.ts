@@ -27,12 +27,20 @@ export class LobbyService {
       room_role: 'MASTER',
     });
     return {
-      lobby_id: lobby.id,
-      player_id: player.id,
-      room_code: lobby.room_code,
-      player_name: player.name,
-      room_role: player.room_role,
+      lobby,
+      player,
     };
+  }
+
+  async updateSocket(room_code: string) {
+    const updatedLobby = await this.lobbyRepository.getWithPlayer({
+      room_code: room_code,
+    });
+    this.lobbyGateway.server.emit('join_lobby', room_code);
+    this.lobbyGateway.server.emit('lobby_update', {
+      room_code: updatedLobby?.room_code,
+      players: updatedLobby?.players,
+    });
   }
 
   async join(data: { room_code: string; name: string }) {
@@ -49,21 +57,10 @@ export class LobbyService {
       lobby_id: lobby.id,
       room_role: 'MEMBER',
     });
-
-    const updatedLobby = await this.lobbyRepository.getWithPlayer({
-      room_code: data.room_code,
-    });
-
-    this.lobbyGateway.server.to(data.room_code).emit('lobby_update', {
-      room_code: updatedLobby?.room_code,
-      players: updatedLobby?.players,
-    });
+    await this.updateSocket(data.room_code);
     return {
-      lobby_id: lobby.id,
-      player_id: player.id,
-      room_code: lobby.room_code,
-      player_name: player.name,
-      room_role: player.room_role,
+      lobby,
+      player,
     };
   }
 
@@ -71,9 +68,6 @@ export class LobbyService {
     const lobby = await this.lobbyRepository.getWithPlayer({
       room_code: data.room_code,
     });
-    if (!lobby) {
-      throw new Error('Lobby not found');
-    }
     return lobby;
   }
 }

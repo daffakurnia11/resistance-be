@@ -17,16 +17,13 @@ export class LobbyGateway {
 
   @SubscribeMessage('join_lobby')
   async handleJoinLobby(
-    @MessageBody() data: { room_code: string },
+    @MessageBody() room_code: string,
     @ConnectedSocket() client: Socket,
   ) {
-    void client.join(data.room_code);
-    console.log(`Client joined room: ${data.room_code}`);
-
+    void client.join(room_code);
     const lobby = await this.lobbyRepository.getWithPlayer({
-      room_code: data.room_code,
+      room_code,
     });
-
-    this.server.to(data.room_code).emit('lobby_update', lobby);
+    this.server.to(room_code).emit('lobby_update', lobby);
   }
 }
