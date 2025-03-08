@@ -12,6 +12,13 @@ export class LobbyService {
     private readonly lobbyGateway: LobbyGateway,
   ) {}
 
+  async get(data: { room_code: string }) {
+    const lobby = await this.lobbyRepository.getWithPlayer({
+      room_code: data.room_code,
+    });
+    return lobby;
+  }
+
   async create(data: { name: string }) {
     const roomId = uuidv7();
     const playerId = uuidv7();
@@ -61,10 +68,8 @@ export class LobbyService {
     };
   }
 
-  async get(data: { room_code: string }) {
-    const lobby = await this.lobbyRepository.getWithPlayer({
-      room_code: data.room_code,
-    });
-    return lobby;
+  async leave(data: { room_code: string; player_id: string }) {
+    await this.playerRepository.softDelete(data.player_id);
+    await this.updateSocket(data.room_code);
   }
 }

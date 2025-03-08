@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Query,
@@ -9,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger/dist/decorators/api-body.decorator';
 import { LobbyService } from '../service/lobby.service';
-import { CreateLobbyDto, JoinLobbyDto } from '../dto/lobby.dto';
+import { CreateLobbyDto, JoinLobbyDto, LeaveLobbyDto } from '../dto/lobby.dto';
 
 @Controller({
   path: 'lobbies',
@@ -34,5 +35,12 @@ export class LobbyController {
   @Get()
   async get(@Query('room_code') room_code: string) {
     return await this.lobbyService.get({ room_code });
+  }
+
+  @Delete('leave')
+  @ApiBody({ type: LeaveLobbyDto })
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async leave(@Body() body: LeaveLobbyDto) {
+    return await this.lobbyService.leave(body);
   }
 }

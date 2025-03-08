@@ -15,7 +15,7 @@ export class LobbyRepository {
   async getWithPlayer(data: LobbyRoomCodeType) {
     return await this.prismaService.lobby.findUnique({
       where: { room_code: data.room_code },
-      include: { players: true },
+      include: { players: { where: { deleted_at: null } } },
     });
   }
 

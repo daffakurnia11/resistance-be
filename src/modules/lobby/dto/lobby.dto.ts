@@ -2,21 +2,34 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class CreateLobbyDto {
-  @ApiProperty({ example: 'Player1' })
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   name: string;
 }
 
 export class JoinLobbyDto {
-  @ApiProperty({ example: 'Player1' })
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty({ example: '524323' })
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @Length(6, 6)
   room_code: string;
+}
+
+export class LeaveLobbyDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  @Length(6, 6)
+  room_code: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  player_id: string;
 }

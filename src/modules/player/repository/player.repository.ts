@@ -16,4 +16,13 @@ export class PlayerRepository {
       },
     });
   }
+
+  async softDelete(id: string) {
+    return await this.prismaService.player.update({
+      where: { id },
+      data: {
+        deleted_at: new Date(),
+      },
+    });
+  }
 }
