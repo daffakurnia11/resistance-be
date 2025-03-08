@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "RoomRole" AS ENUM ('MASTER', 'MEMBER');
+
 -- CreateTable
 CREATE TABLE "lobbies" (
     "id" UUID NOT NULL,
@@ -17,6 +20,7 @@ CREATE TABLE "players" (
     "deleted_at" TIMESTAMPTZ(6),
     "name" TEXT NOT NULL,
     "lobby_id" UUID,
+    "room_role" "RoomRole" NOT NULL DEFAULT 'MEMBER',
 
     CONSTRAINT "players_pkey" PRIMARY KEY ("id")
 );

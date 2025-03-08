@@ -32,6 +32,12 @@ model Player {
   name       String    @db.Text
   lobby      Lobby?    @relation(fields: [lobby_id], references: [id])
   lobby_id   String?   @db.Uuid
+  room_role  RoomRole  @default(MEMBER)
 
   @@map(name: "players")
+}
+
+enum RoomRole {
+  MASTER
+  MEMBER
 }

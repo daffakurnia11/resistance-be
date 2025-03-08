@@ -8,7 +8,12 @@ export class PlayerRepository {
 
   async create(data: PlayerType) {
     return await this.prismaService.player.create({
-      data: { id: data.id, name: data.name, lobby_id: data.lobby_id },
+      data: {
+        id: data.id,
+        name: data.name,
+        lobby_id: data.lobby_id,
+        room_role: data.room_role,
+      },
     });
   }
 }

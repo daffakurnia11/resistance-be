@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { LobbyRepository } from '../repository/lobby.repository';
 import { PlayerRepository } from 'src/modules/player/repository/player.repository';
 import { v7 as uuidv7 } from 'uuid';
+import { LobbyGateway } from '../gateway/lobby.gateway';
 
 @Injectable()
 export class LobbyService {
   constructor(
     protected lobbyRepository: LobbyRepository,
     protected playerRepository: PlayerRepository,
+    private readonly lobbyGateway: LobbyGateway,
   ) {}
 
   async create(data: { name: string }) {
@@ -22,12 +24,14 @@ export class LobbyService {
       id: playerId,
       name: data.name,
       lobby_id: roomId,
+      room_role: 'MASTER',
     });
     return {
       lobby_id: lobby.id,
       player_id: player.id,
       room_code: lobby.room_code,
       player_name: player.name,
+      room_role: player.room_role,
     };
   }
 
@@ -43,12 +47,23 @@ export class LobbyService {
       id: playerId,
       name: data.name,
       lobby_id: lobby.id,
+      room_role: 'MEMBER',
+    });
+
+    const updatedLobby = await this.lobbyRepository.getWithPlayer({
+      room_code: data.room_code,
+    });
+
+    this.lobbyGateway.server.to(data.room_code).emit('lobby_update', {
+      room_code: updatedLobby?.room_code,
+      players: updatedLobby?.players,
     });
     return {
       lobby_id: lobby.id,
       player_id: player.id,
       room_code: lobby.room_code,
       player_name: player.name,
+      room_role: player.room_role,
     };
   }
 
