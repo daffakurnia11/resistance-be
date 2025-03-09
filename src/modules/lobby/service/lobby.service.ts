@@ -2,14 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { LobbyRepository } from '../repository/lobby.repository';
 import { PlayerRepository } from 'src/modules/player/repository/player.repository';
 import { v7 as uuidv7 } from 'uuid';
-import { LobbyGateway } from '../gateway/lobby.gateway';
 
 @Injectable()
 export class LobbyService {
   constructor(
     protected lobbyRepository: LobbyRepository,
     protected playerRepository: PlayerRepository,
-    private readonly lobbyGateway: LobbyGateway,
   ) {}
 
   async get(data: { room_code: string }) {
@@ -36,55 +34,6 @@ export class LobbyService {
     return {
       lobby,
       player,
-    };
-  }
-
-  async updateSocket(room_code: string) {
-    const updatedLobby = await this.lobbyRepository.getWithPlayer({
-      room_code: room_code,
-    });
-    this.lobbyGateway.server.emit('join_lobby', room_code);
-    this.lobbyGateway.server.emit('lobby_update', updatedLobby);
-  }
-
-  async join(data: { room_code: string; name: string }) {
-    const lobby = await this.lobbyRepository.findOne({
-      room_code: data.room_code,
-    });
-    const playerCount = await this.playerRepository.countPlayerInLobby(
-      lobby.id,
-    );
-
-    if (playerCount < 5) {
-      const playerId = uuidv7();
-      const player = await this.playerRepository.create({
-        id: playerId,
-        name: data.name,
-        lobby_id: lobby.id,
-        room_role: 'MEMBER',
-      });
-      await this.updateSocket(data.room_code);
-      return {
-        lobby,
-        player,
-      };
-    } else {
-      return {
-        statusCode: 400,
-        success: false,
-        message: 'Oops! The lobby has been full.',
-      };
-    }
-  }
-
-  async leave(data: { room_code: string; player_id: string }) {
-    await this.playerRepository.softDelete(data.player_id);
-    await this.updateSocket(data.room_code);
-    return {
-      statusCode: 204,
-      success: true,
-      message: 'No Content',
-      data: null,
     };
   }
 }

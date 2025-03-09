@@ -9,11 +9,9 @@ import {
 } from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger/dist/decorators/api-body.decorator';
 import { LobbyService } from '../service/lobby.service';
-import { CreateLobbyDto, JoinLobbyDto, LeaveLobbyDto } from '../dto/lobby.dto';
+import { CreateLobbyDto } from '../dto/lobby.dto';
 
-@Controller({
-  path: 'lobbies',
-})
+@Controller('lobby')
 export class LobbyController {
   constructor(private readonly lobbyService: LobbyService) {}
 
@@ -24,22 +22,8 @@ export class LobbyController {
     return await this.lobbyService.create(body);
   }
 
-  @Post('join')
-  @ApiBody({ type: JoinLobbyDto })
-  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  async join(@Body() body: JoinLobbyDto) {
-    return await this.lobbyService.join(body);
-  }
-
   @Get()
   async get(@Query('room_code') room_code: string) {
     return await this.lobbyService.get({ room_code });
-  }
-
-  @Post('leave')
-  @ApiBody({ type: LeaveLobbyDto })
-  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  async leave(@Body() body: LeaveLobbyDto) {
-    return await this.lobbyService.leave(body);
   }
 }
