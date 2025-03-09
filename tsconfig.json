@@ -16,6 +16,12 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@src/*": ["src/*"],
+      "@modules/*": ["src/modules/*"],
+      "@commons/*": ["src/commons/*"],
+      "@tests/*": ["tests/*"]
+    }
   }
 }
