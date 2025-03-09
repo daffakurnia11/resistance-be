@@ -80,7 +80,7 @@ export class LobbyService {
       await this.playerRepository.bulkSoftDelete(data.id);
       this.eventBus.publishAll(events);
     }
-    
+
     return await this.lobbyRepository.softDelete(data);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Player, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
-import { PlayerType } from 'types/player';
+import { PlayerType, PlayerWithRoleType } from 'types/player';
 
 @Injectable()
 export class PlayerRepository {
@@ -53,5 +53,16 @@ export class PlayerRepository {
 
   async findManyByWhere(where: Prisma.PlayerWhereInput): Promise<Player[]> {
     return await this.prismaService.player.findMany({ where });
+  }
+
+  async bulkAssignRoles(players: PlayerWithRoleType[]): Promise<void> {
+    const promises = players.map((each) =>
+      this.prismaService.player.update({
+        where: { id: each.id },
+        data: { role: each.role },
+      }),
+    );
+
+    await Promise.all(promises);
   }
 }

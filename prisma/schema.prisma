@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PlayerRoleEnum {
+  RESISTANCE
+  SPY
+}
+
 model Lobby {
   id         String     @id @default(uuid()) @db.Uuid
   created_at DateTime   @default(now()) @db.Timestamptz(6)
@@ -21,6 +26,7 @@ model Lobby {
   room_code  String     @unique @db.Text
   players    Player[]
   lobby_logs LobbyLog[]
+  missions   Mission[]
 
   @@map(name: "lobbies")
 }
@@ -41,17 +47,99 @@ model LobbyLog {
 }
 
 model Player {
-  id         String     @id @default(uuid()) @db.Uuid
-  created_at DateTime   @default(now()) @db.Timestamptz(6)
-  updated_at DateTime   @updatedAt @db.Timestamptz(6)
-  deleted_at DateTime?  @db.Timestamptz(6) // Nullable
-  name       String     @db.Text
-  lobby      Lobby?     @relation(fields: [lobby_id], references: [id])
-  lobby_id   String?    @db.Uuid
-  room_role  RoomRole   @default(MEMBER)
-  lobby_logs LobbyLog[]
+  id              String          @id @default(uuid()) @db.Uuid
+  created_at      DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime        @updatedAt @db.Timestamptz(6)
+  deleted_at      DateTime?       @db.Timestamptz(6) // Nullable
+  role            PlayerRoleEnum?
+  name            String          @db.Text
+  lobby           Lobby?          @relation(fields: [lobby_id], references: [id])
+  lobby_id        String?         @db.Uuid
+  room_role       RoomRole        @default(MEMBER)
+  lobby_logs      LobbyLog[]
+  missions        Mission[]
+  mission_players MissionPlayer[]
+  mission_votes   MissionVote[]
 
   @@map(name: "players")
+}
+
+enum MissionStatusEnum {
+  OPEN
+  IN_PLAY
+  CLOSE
+}
+
+enum MissionEnum {
+  SUCCESS
+  FAIL
+}
+
+model Mission {
+  id              String            @id @default(uuid()) @db.Uuid
+  status          MissionStatusEnum @default(OPEN)
+  leader          Player            @relation(fields: [leader_id], references: [id])
+  lobby           Lobby             @relation(fields: [lobby_id], references: [id])
+  result          MissionEnum?
+  created_at      DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime          @updatedAt @db.Timestamptz(6)
+  deleted_at      DateTime?         @db.Timestamptz(6) // Nullable
+  leader_id       String            @db.Uuid
+  lobby_id        String            @db.Uuid
+  mission_players MissionPlayer[]
+  mission_votes   MissionVote[]
+
+  @@map("missions")
+}
+
+model MissionPlayer {
+  id         String    @id @default(uuid()) @db.Uuid
+  player_id  String    @db.Uuid
+  mission_id String    @db.Uuid
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime  @updatedAt @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6) // Nullable
+
+  player            Player           @relation(fields: [player_id], references: [id])
+  mission           Mission          @relation(fields: [mission_id], references: [id])
+  mission_vote_logs MissionVoteLog[]
+
+  @@map("mission_players")
+}
+
+enum MissionVoteEnum {
+  APPROVE
+  REJECT
+}
+
+model MissionVote {
+  id         String          @id @default(uuid()) @db.Uuid
+  player_id  String          @db.Uuid // voter
+  mission_id String          @db.Uuid
+  vote       MissionVoteEnum
+  created_at DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at DateTime        @updatedAt @db.Timestamptz(6)
+  deleted_at DateTime?       @db.Timestamptz(6) // Nullable
+
+  mission           Mission          @relation(fields: [mission_id], references: [id])
+  player            Player           @relation(fields: [player_id], references: [id])
+  mission_vote_logs MissionVoteLog[]
+
+  @@map("mission_votes")
+}
+
+model MissionVoteLog {
+  id                String    @id @default(uuid()) @db.Uuid
+  mission_vote_id   String    @db.Uuid
+  mission_player_id String    @db.Uuid
+  created_at        DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime  @updatedAt @db.Timestamptz(6)
+  deleted_at        DateTime? @db.Timestamptz(6) // Nullable
+
+  mission_vote   MissionVote   @relation(fields: [mission_vote_id], references: [id])
+  mission_player MissionPlayer @relation(fields: [mission_player_id], references: [id])
+
+  @@map("mission_vote_logs")
 }
 
 enum RoomRole {

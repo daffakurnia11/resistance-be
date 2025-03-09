@@ -7,11 +7,18 @@ import { PlayerController } from './controller/player.controller';
 import { LobbyRepository } from '../lobby/repository/lobby.repository';
 import { CqrsModule } from '@nestjs/cqrs';
 import { LobbyLogModule } from '../lobby-log/lobby.log.module';
+import { PlayerRoleGeneratorService } from './service/player.role.generator.service';
 
 @Module({
   imports: [PrismaModule, CqrsModule, LobbyLogModule],
   controllers: [PlayerController],
-  providers: [PlayerRepository, PlayerService, PlayerGateway, LobbyRepository],
+  providers: [
+    PlayerRepository,
+    PlayerService,
+    PlayerGateway,
+    LobbyRepository,
+    PlayerRoleGeneratorService,
+  ],
   exports: [PlayerService],
 })
 export class PlayerModule {}
