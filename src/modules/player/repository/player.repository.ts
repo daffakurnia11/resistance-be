@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Player, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { PlayerType } from 'types/player';
 
@@ -48,5 +49,9 @@ export class PlayerRepository {
         deleted_at: new Date(),
       },
     });
+  }
+
+  async findManyByWhere(where: Prisma.PlayerWhereInput): Promise<Player[]> {
+    return await this.prismaService.player.findMany({ where });
   }
 }

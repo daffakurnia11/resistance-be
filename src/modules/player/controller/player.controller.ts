@@ -30,4 +30,11 @@ export class PlayerController {
   async leave(@Body() body: LeaveLobbyDto) {
     return await this.playerService.leave(body);
   }
+
+  @Post('kick')
+  @ApiBody({ type: LeaveLobbyDto })
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async kick(@Body() body: LeaveLobbyDto) {
+    return await this.playerService.kick(body);
+  }
 }

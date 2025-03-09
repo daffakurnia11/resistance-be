@@ -4,6 +4,7 @@ export enum LobbyLogAction {
   LEAVE = 'LEAVE',
   KICK = 'KICK',
   DELETE = 'DELETE',
+  DISBAND = 'DISBAND',
 }
 export class LobbyLogDTO {
   lobby_id: string;

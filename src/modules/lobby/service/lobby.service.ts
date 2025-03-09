@@ -3,7 +3,7 @@ import { LobbyRepository } from '../repository/lobby.repository';
 import { PlayerRepository } from 'src/modules/player/repository/player.repository';
 import { v7 as uuidv7 } from 'uuid';
 import { PlayerGateway } from 'src/modules/player/gateway/player.gateway';
-import { EventBus } from '@nestjs/cqrs';
+import { EventBus, IEvent } from '@nestjs/cqrs';
 import { LobbyLogEvent } from '@src/modules/lobby-log/events/lobby.log.event.handler';
 import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
 import { Lobby, Player } from '@prisma/client';
@@ -56,11 +56,32 @@ export class LobbyService {
   }
 
   async delete(data: { id: string }) {
-    await this.playerRepository.bulkSoftDelete(data.id);
     this.playerGateway.server.emit('player_update', {
       room_code: null,
       players: [],
     });
+    const players = await this.playerRepository.findManyByWhere({
+      lobby_id: data.id,
+      deleted_at: null,
+    });
+
+    const events: IEvent[] = players.length
+      ? players.map(
+          (each) =>
+            new LobbyLogEvent({
+              action: LobbyLogAction.DISBAND,
+              lobby_id: data.id,
+              player_id: each.id,
+            }),
+        )
+      : [];
+
+    if (players.length > 0) {
+      await this.playerRepository.bulkSoftDelete(data.id);
+    }
+
+    this.eventBus.publishAll(events);
+
     return await this.lobbyRepository.softDelete(data);
   }
 }
