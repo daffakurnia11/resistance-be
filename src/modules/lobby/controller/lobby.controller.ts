@@ -25,7 +25,11 @@ export class LobbyController {
 
   @Get(':room_code')
   async get(@Param('room_code') room_code: string) {
-    return await this.lobbyService.get({ room_code });
+    try {
+      return await this.lobbyService.get({ room_code });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   @Delete(':id')

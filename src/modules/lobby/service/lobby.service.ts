@@ -3,6 +3,10 @@ import { LobbyRepository } from '../repository/lobby.repository';
 import { PlayerRepository } from 'src/modules/player/repository/player.repository';
 import { v7 as uuidv7 } from 'uuid';
 import { PlayerGateway } from 'src/modules/player/gateway/player.gateway';
+import { EventBus } from '@nestjs/cqrs';
+import { LobbyLogEvent } from '@src/modules/lobby-log/events/lobby.log.event.handler';
+import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
+import { Lobby, Player } from '@prisma/client';
 
 @Injectable()
 export class LobbyService {
@@ -10,6 +14,7 @@ export class LobbyService {
     protected lobbyRepository: LobbyRepository,
     protected playerRepository: PlayerRepository,
     private readonly playerGateway: PlayerGateway,
+    protected readonly eventBus: EventBus,
   ) {}
 
   async get(data: { room_code: string }) {
@@ -19,7 +24,9 @@ export class LobbyService {
     return lobby;
   }
 
-  async create(data: { name: string }) {
+  async create(data: {
+    name: string;
+  }): Promise<{ lobby: Lobby; player: Player }> {
     const roomId = uuidv7();
     const playerId = uuidv7();
     const randomRoom = Math.floor(100000 + Math.random() * 900000);
@@ -33,6 +40,15 @@ export class LobbyService {
       lobby_id: roomId,
       room_role: 'MASTER',
     });
+
+    this.eventBus.publish(
+      new LobbyLogEvent({
+        action: LobbyLogAction.CREATE,
+        lobby_id: lobby.id,
+        player_id: player.id,
+      }),
+    );
+
     return {
       lobby,
       player,
