@@ -3,6 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { LobbyRepository } from 'src/modules/lobby/repository/lobby.repository';
 import { PlayerRepository } from '../repository/player.repository';
 import { PlayerGateway } from '../gateway/player.gateway';
+import { EventBus } from '@nestjs/cqrs';
+import { LobbyLogEvent } from '@src/modules/lobby-log/events/lobby.log.event.handler';
+import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
 
 @Injectable()
 export class PlayerService {
@@ -10,6 +13,7 @@ export class PlayerService {
     protected lobbyRepository: LobbyRepository,
     protected playerRepository: PlayerRepository,
     private readonly playerGateway: PlayerGateway,
+    protected readonly eventBus: EventBus,
   ) {}
 
   async updateSocket(room_code: string) {
@@ -37,6 +41,14 @@ export class PlayerService {
         room_role: 'MEMBER',
       });
       await this.updateSocket(data.room_code);
+
+      this.eventBus.publish(
+        new LobbyLogEvent({
+          action: LobbyLogAction.JOIN,
+          lobby_id: lobby.id,
+          player_id: playerId,
+        }),
+      );
       return {
         lobby,
         player,
@@ -52,6 +64,7 @@ export class PlayerService {
 
   async leave(data: { room_code: string; player_id: string }) {
     await this.playerRepository.softDelete(data.player_id);
+    const profile = await this.playerRepository.findById(data.player_id);
     await this.updateSocket(data.room_code);
     return {
       statusCode: 204,

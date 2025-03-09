@@ -17,7 +17,11 @@ export class PlayerController {
   @ApiBody({ type: JoinLobbyDto })
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async join(@Body() body: JoinLobbyDto) {
-    return await this.playerService.join(body);
+    try {
+      return await this.playerService.join(body);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   @Post('leave')

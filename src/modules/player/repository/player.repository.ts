@@ -17,6 +17,15 @@ export class PlayerRepository {
     });
   }
 
+  async findById(id: string) {
+    return await this.prismaService.player.findUnique({
+      where: { id },
+      select: {
+        room_role: true,
+      },
+    });
+  }
+
   async countPlayerInLobby(lobby_id: string) {
     return await this.prismaService.player.count({
       where: { lobby_id, deleted_at: null },
