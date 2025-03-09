@@ -1,9 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
-  Query,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -22,8 +23,13 @@ export class LobbyController {
     return await this.lobbyService.create(body);
   }
 
-  @Get()
-  async get(@Query('room_code') room_code: string) {
+  @Get(':room_code')
+  async get(@Param('room_code') room_code: string) {
     return await this.lobbyService.get({ room_code });
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return await this.lobbyService.delete({ id });
   }
 }

@@ -24,4 +24,11 @@ export class LobbyRepository {
       where: { room_code: data.room_code },
     });
   }
+
+  async softDelete(data: { id: string }) {
+    return await this.prismaService.lobby.update({
+      where: { id: data.id },
+      data: { deleted_at: new Date() },
+    });
+  }
 }

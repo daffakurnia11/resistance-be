@@ -31,4 +31,13 @@ export class PlayerRepository {
       },
     });
   }
+
+  async bulkSoftDelete(lobby_id: string) {
+    return await this.prismaService.player.updateMany({
+      where: { lobby_id },
+      data: {
+        deleted_at: new Date(),
+      },
+    });
+  }
 }
