@@ -78,10 +78,9 @@ export class LobbyService {
 
     if (players.length > 0) {
       await this.playerRepository.bulkSoftDelete(data.id);
+      this.eventBus.publishAll(events);
     }
-
-    this.eventBus.publishAll(events);
-
+    
     return await this.lobbyRepository.softDelete(data);
   }
 }
