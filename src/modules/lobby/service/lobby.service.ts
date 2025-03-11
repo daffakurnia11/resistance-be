@@ -7,6 +7,7 @@ import { EventBus, IEvent } from '@nestjs/cqrs';
 import { LobbyLogEvent } from '@src/modules/lobby-log/events/lobby.log.event.handler';
 import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
 import { Lobby, Player } from '@prisma/client';
+import { PlayerRoomRole } from '@src/modules/player/dto/player.dto';
 
 @Injectable()
 export class LobbyService {
@@ -17,16 +18,15 @@ export class LobbyService {
     protected readonly eventBus: EventBus,
   ) {}
 
-  async get(data: { room_code: string }) {
-    const lobby = await this.lobbyRepository.getWithPlayer({
-      room_code: data.room_code,
-    });
+  async get(room_code: string): Promise<Lobby> {
+    const lobby = await this.lobbyRepository.getWithPlayer(room_code);
+    if (!lobby) {
+      throw new Error('Lobby not found');
+    }
     return lobby;
   }
 
-  async create(data: {
-    name: string;
-  }): Promise<{ lobby: Lobby; player: Player }> {
+  async create(name: string): Promise<{ lobby: Lobby; player: Player }> {
     const roomId = uuidv7();
     const playerId = uuidv7();
     const randomRoom = Math.floor(100000 + Math.random() * 900000);
@@ -36,9 +36,9 @@ export class LobbyService {
     });
     const player = await this.playerRepository.create({
       id: playerId,
-      name: data.name,
+      name,
       lobby_id: roomId,
-      room_role: 'MASTER',
+      room_role: PlayerRoomRole.MASTER,
     });
 
     this.eventBus.publish(
@@ -55,13 +55,13 @@ export class LobbyService {
     };
   }
 
-  async delete(data: { id: string }) {
+  async delete(id: string): Promise<Lobby> {
     this.playerGateway.server.emit('player_update', {
       room_code: null,
       players: [],
     });
     const players = await this.playerRepository.findManyByWhere({
-      lobby_id: data.id,
+      lobby_id: id,
       deleted_at: null,
     });
 
@@ -70,17 +70,17 @@ export class LobbyService {
           (each) =>
             new LobbyLogEvent({
               action: LobbyLogAction.DISBAND,
-              lobby_id: data.id,
+              lobby_id: id,
               player_id: each.id,
             }),
         )
       : [];
 
     if (players.length > 0) {
-      await this.playerRepository.bulkSoftDelete(data.id);
+      await this.playerRepository.bulkSoftDelete(id);
       this.eventBus.publishAll(events);
     }
 
-    return await this.lobbyRepository.softDelete(data);
+    return await this.lobbyRepository.softDelete(id);
   }
 }

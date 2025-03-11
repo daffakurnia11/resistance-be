@@ -6,6 +6,11 @@ import { PlayerGateway } from '../gateway/player.gateway';
 import { EventBus } from '@nestjs/cqrs';
 import { LobbyLogEvent } from '@src/modules/lobby-log/events/lobby.log.event.handler';
 import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
+import {
+  PlayerJoinDTO,
+  PlayerLeaveDTO,
+  PlayerRoomRole,
+} from '../dto/player.dto';
 
 @Injectable()
 export class PlayerService {
@@ -17,17 +22,13 @@ export class PlayerService {
   ) {}
 
   async updateSocket(room_code: string) {
-    const updatedLobby = await this.lobbyRepository.getWithPlayer({
-      room_code: room_code,
-    });
+    const updatedLobby = await this.lobbyRepository.getWithPlayer(room_code);
     this.playerGateway.server.emit('player_join', room_code);
     this.playerGateway.server.emit('player_update', updatedLobby);
   }
 
-  async join(data: { room_code: string; name: string }) {
-    const lobby = await this.lobbyRepository.findOne({
-      room_code: data.room_code,
-    });
+  async join(data: PlayerJoinDTO) {
+    const lobby = await this.lobbyRepository.findOne(data.room_code);
     const playerCount = await this.playerRepository.countPlayerInLobby(
       lobby.id,
     );
@@ -38,7 +39,7 @@ export class PlayerService {
         id: playerId,
         name: data.name,
         lobby_id: lobby.id,
-        room_role: 'MEMBER',
+        room_role: PlayerRoomRole.MEMBER,
       });
       await this.updateSocket(data.room_code);
 
@@ -70,9 +71,7 @@ export class PlayerService {
     await this.playerRepository.softDelete(data.player_id);
     await this.updateSocket(data.room_code);
 
-    const lobby = await this.lobbyRepository.findOne({
-      room_code: data.room_code,
-    });
+    const lobby = await this.lobbyRepository.findOne(data.room_code);
 
     this.eventBus.publish(
       new LobbyLogEvent({
@@ -89,14 +88,14 @@ export class PlayerService {
     };
   }
 
-  async leave(data: { room_code: string; player_id: string }) {
+  async leave(data: PlayerLeaveDTO) {
     return await this.baseLeaveOrKick({
       ...data,
       action: LobbyLogAction.LEAVE,
     });
   }
 
-  async kick(data: { room_code: string; player_id: string }) {
+  async kick(data: PlayerLeaveDTO) {
     return await this.baseLeaveOrKick({ ...data, action: LobbyLogAction.KICK });
   }
 }

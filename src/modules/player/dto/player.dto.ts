@@ -26,3 +26,25 @@ export class LeaveLobbyDto {
   @IsString()
   player_id: string;
 }
+
+export enum PlayerRoomRole {
+  MASTER = 'MASTER',
+  MEMBER = 'MEMBER',
+}
+
+export class PlayerJoinDTO {
+  room_code: string;
+  name: string;
+}
+
+export class PlayerLeaveDTO {
+  room_code: string;
+  player_id: string;
+}
+
+export class PlayerTypeDTO {
+  name: string;
+  lobby_id: string;
+  id: string;
+  room_role: PlayerRoomRole;
+}

@@ -1,6 +1,7 @@
 import {
   CallHandler,
   ExecutionContext,
+  HttpStatus,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
@@ -13,25 +14,25 @@ export class ResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data: any) => {
         const response = context.switchToHttp().getResponse();
-        const statusCode = response.statusCode;
+        const code: HttpStatus = response.statusCode;
 
         if (data.statusCode) {
           return {
-            statusCode: data.statusCode || 500,
+            code: data.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
             success: data.success || false,
             message: data.message || 'Internal Server Error',
             data: data.data,
           };
         }
         return {
-          statusCode,
-          success: statusCode >= 200 && statusCode < 300,
+          code,
+          success: true,
           message:
-            statusCode === 200
+            code === HttpStatus.OK
               ? 'OK'
-              : statusCode === 201
+              : code === HttpStatus.CREATED
                 ? 'Created'
-                : statusCode === 204
+                : code === HttpStatus.NO_CONTENT
                   ? 'No Content'
                   : '',
           data: data || null,

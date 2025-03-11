@@ -1,10 +1,4 @@
-import {
-  Body,
-  Controller,
-  Post,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Post, UsePipes } from '@nestjs/common';
 import { PlayerService } from '../service/player.service';
 import { ApiBody } from '@nestjs/swagger';
 import { JoinLobbyDto, LeaveLobbyDto } from '../dto/player.dto';
@@ -15,26 +9,37 @@ export class PlayerController {
 
   @Post('join')
   @ApiBody({ type: JoinLobbyDto })
-  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  @UsePipes()
   async join(@Body() body: JoinLobbyDto) {
     try {
       return await this.playerService.join(body);
     } catch (err) {
       console.error(err);
+      throw err;
     }
   }
 
   @Post('leave')
   @ApiBody({ type: LeaveLobbyDto })
-  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  @UsePipes()
   async leave(@Body() body: LeaveLobbyDto) {
-    return await this.playerService.leave(body);
+    try {
+      return await this.playerService.leave(body);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
 
   @Post('kick')
   @ApiBody({ type: LeaveLobbyDto })
-  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  @UsePipes()
   async kick(@Body() body: LeaveLobbyDto) {
-    return await this.playerService.kick(body);
+    try {
+      return await this.playerService.kick(body);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
 }

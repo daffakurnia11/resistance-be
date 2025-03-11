@@ -1,9 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateLobbyDto {
+export class CreateLobbyDTO {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   name: string;
+}
+
+export class LobbyCreateDTO {
+  id: string;
+  room_code: string;
 }

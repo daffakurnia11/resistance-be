@@ -11,7 +11,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    const status =
+    const status: HttpStatus =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
@@ -22,14 +22,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
         : 'Internal Server Error';
 
     response.status(status).json({
-      statusCode: status,
+      code: status,
       success: false,
       message:
-        status === 400
+        status === HttpStatus.BAD_REQUEST
           ? 'Bad Request'
-          : status === 404
+          : status === HttpStatus.NOT_FOUND
             ? 'Not Found'
-            : status === 500
+            : status === HttpStatus.INTERNAL_SERVER_ERROR
               ? 'Internal Server Error'
               : 'Error',
       error: message,

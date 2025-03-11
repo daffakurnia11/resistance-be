@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Player, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
-import { PlayerType, PlayerWithRoleType } from 'types/player';
+import { PlayerTypeDTO } from '../dto/player.dto';
+import { PlayerWithRoleType } from 'types/player';
 
 @Injectable()
 export class PlayerRepository {
   constructor(protected prismaService: PrismaService) {}
 
-  async create(data: PlayerType) {
+  async create(data: PlayerTypeDTO): Promise<Player> {
     return await this.prismaService.player.create({
       data: {
         id: data.id,

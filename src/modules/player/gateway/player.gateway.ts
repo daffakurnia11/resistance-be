@@ -21,9 +21,7 @@ export class PlayerGateway {
     @ConnectedSocket() client: Socket,
   ) {
     void client.join(room_code);
-    const lobby = await this.lobbyRepository.getWithPlayer({
-      room_code,
-    });
+    const lobby = await this.lobbyRepository.getWithPlayer(room_code);
     this.server.to(room_code).emit('player_update', lobby);
   }
 }
