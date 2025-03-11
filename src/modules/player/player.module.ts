@@ -19,6 +19,6 @@ import { PlayerRoleGeneratorService } from './service/player.role.generator.serv
     LobbyRepository,
     PlayerRoleGeneratorService,
   ],
-  exports: [PlayerService],
+  exports: [PlayerService, PlayerGateway],
 })
 export class PlayerModule {}

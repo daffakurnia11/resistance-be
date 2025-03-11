@@ -24,4 +24,13 @@ export class PlayerGateway {
     const lobby = await this.lobbyRepository.getWithPlayer(room_code);
     this.server.to(room_code).emit('player_update', lobby);
   }
+
+  @SubscribeMessage('lobby_log')
+  handlePlayerLog(
+    @MessageBody() log: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    void client.join(log);
+    this.server.emit('lobby_log', log);
+  }
 }

@@ -15,9 +15,9 @@ import {
 @Injectable()
 export class PlayerService {
   constructor(
-    protected lobbyRepository: LobbyRepository,
-    protected playerRepository: PlayerRepository,
-    private readonly playerGateway: PlayerGateway,
+    protected readonly lobbyRepository: LobbyRepository,
+    protected readonly playerRepository: PlayerRepository,
+    protected readonly playerGateway: PlayerGateway,
     protected readonly eventBus: EventBus,
   ) {}
 
