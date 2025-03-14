@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums, Mission, MissionStatusEnum } from '@prisma/client';
-import { IsIn, IsUUID } from 'class-validator';
+import { $Enums, Mission } from '@prisma/client';
+import { IsUUID } from 'class-validator';
 
 export class MissionDTO implements Mission {
   result: $Enums.MissionEnum | null;
@@ -9,8 +9,6 @@ export class MissionDTO implements Mission {
   updated_at: Date;
   deleted_at: Date | null;
 
-  @ApiProperty()
-  @IsIn(Object.values(MissionStatusEnum))
   status: $Enums.MissionStatusEnum;
 
   @ApiProperty({ required: true })
