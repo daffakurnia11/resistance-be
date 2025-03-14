@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { LobbyCreateDTO } from '../dto/lobby.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class LobbyRepository {
@@ -23,6 +24,10 @@ export class LobbyRepository {
     return await this.prismaService.lobby.findUniqueOrThrow({
       where: { room_code },
     });
+  }
+
+  async findOneByWhere(where: Prisma.LobbyWhereInput) {
+    return await this.prismaService.lobby.findFirst({ where });
   }
 
   async softDelete(id: string) {

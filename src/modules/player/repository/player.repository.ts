@@ -28,6 +28,10 @@ export class PlayerRepository {
     });
   }
 
+  async findOneByWhere(where: Prisma.PlayerWhereInput) {
+    return await this.prismaService.player.findFirst({ where });
+  }
+
   async countPlayerInLobby(lobby_id: string) {
     return await this.prismaService.player.count({
       where: { lobby_id, deleted_at: null },

@@ -1,101 +1,41 @@
-import { v7 as uuidv7 } from 'uuid';
 import { Injectable } from '@nestjs/common';
-import { LobbyRepository } from 'src/modules/lobby/repository/lobby.repository';
-import { PlayerRepository } from '../repository/player.repository';
-import { PlayerGateway } from '../gateway/player.gateway';
-import { EventBus } from '@nestjs/cqrs';
-import { LobbyLogEvent } from '@src/modules/lobby-log/events/lobby.log.event.handler';
-import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
-import {
-  PlayerJoinDTO,
-  PlayerLeaveDTO,
-  PlayerRoomRole,
-} from '../dto/player.dto';
+import { PlayerJoinDTO, PlayerLeaveDTO } from '../dto/player.dto';
+import { Player } from '@prisma/client';
+import { PlayerRevealDTO } from '../dto/player.reveal.dto';
+import { PlayerAssignManager } from '../managers/player.assign.manager';
+import { PlayerAssignRoleDTO } from '../dto/player.assign.role.dto';
+import { PlayerRevealManager } from '../managers/player.reveal.manager';
+import { PlayerKickManager } from '../managers/player.kick.manager';
+import { PlayerLeaveManager } from '../managers/player.leave.manager';
+import { PlayerJoinManager } from '../managers/player.join.manager';
 
 @Injectable()
 export class PlayerService {
   constructor(
-    protected readonly lobbyRepository: LobbyRepository,
-    protected readonly playerRepository: PlayerRepository,
-    protected readonly playerGateway: PlayerGateway,
-    protected readonly eventBus: EventBus,
+    protected readonly assignManager: PlayerAssignManager,
+    protected readonly revealManager: PlayerRevealManager,
+    protected readonly kickManager: PlayerKickManager,
+    protected readonly leaveManager: PlayerLeaveManager,
+    protected readonly joinManager: PlayerJoinManager,
   ) {}
 
-  async updateSocket(room_code: string) {
-    const updatedLobby = await this.lobbyRepository.getWithPlayer(room_code);
-    this.playerGateway.server.emit('player_join', room_code);
-    this.playerGateway.server.emit('player_update', updatedLobby);
+  async join(payload: PlayerJoinDTO) {
+    return await this.joinManager.execute(payload);
   }
 
-  async join(data: PlayerJoinDTO) {
-    const lobby = await this.lobbyRepository.findOne(data.room_code);
-    const playerCount = await this.playerRepository.countPlayerInLobby(
-      lobby.id,
-    );
-
-    if (playerCount < 5) {
-      const playerId = uuidv7();
-      const player = await this.playerRepository.create({
-        id: playerId,
-        name: data.name,
-        lobby_id: lobby.id,
-        room_role: PlayerRoomRole.MEMBER,
-      });
-      await this.updateSocket(data.room_code);
-
-      this.eventBus.publish(
-        new LobbyLogEvent({
-          action: LobbyLogAction.JOIN,
-          lobby_id: lobby.id,
-          player_id: playerId,
-        }),
-      );
-      return {
-        lobby,
-        player,
-      };
-    } else {
-      return {
-        statusCode: 400,
-        success: false,
-        message: 'Oops! The lobby has been full.',
-      };
-    }
+  async leave(payload: PlayerLeaveDTO) {
+    return await this.leaveManager.execute(payload);
   }
 
-  async baseLeaveOrKick(data: {
-    room_code: string;
-    player_id: string;
-    action: string;
-  }) {
-    await this.playerRepository.softDelete(data.player_id);
-    await this.updateSocket(data.room_code);
-
-    const lobby = await this.lobbyRepository.findOne(data.room_code);
-
-    this.eventBus.publish(
-      new LobbyLogEvent({
-        action: data.action as LobbyLogAction,
-        lobby_id: lobby.id,
-        player_id: data.player_id,
-      }),
-    );
-    return {
-      statusCode: 204,
-      success: true,
-      message: 'No Content',
-      data: null,
-    };
+  async kick(payload: PlayerLeaveDTO) {
+    return await this.kickManager.execute(payload);
   }
 
-  async leave(data: PlayerLeaveDTO) {
-    return await this.baseLeaveOrKick({
-      ...data,
-      action: LobbyLogAction.LEAVE,
-    });
+  async reveal(payload: PlayerRevealDTO): Promise<Player | Error> {
+    return await this.revealManager.execute(payload);
   }
 
-  async kick(data: PlayerLeaveDTO) {
-    return await this.baseLeaveOrKick({ ...data, action: LobbyLogAction.KICK });
+  async assign(payload: PlayerAssignRoleDTO) {
+    return await this.assignManager.execute(payload);
   }
 }
