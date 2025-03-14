@@ -16,7 +16,7 @@ export class PlayerAssignManager {
 
       return Promise.resolve(true);
     } catch (err) {
-      return Promise.reject(false);
+      return Promise.reject(err);
     }
   }
 }

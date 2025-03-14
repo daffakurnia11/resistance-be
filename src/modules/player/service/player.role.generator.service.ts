@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { PlayerRepository } from '../repository/player.repository';
 import { Player, PlayerRoleEnum } from '@prisma/client';
 import { PlayerWithRoleType } from 'types/player';
@@ -16,12 +16,12 @@ export class PlayerRoleGeneratorService {
     });
     if (!players.length) {
       this.logger.log(`No players found in lobby ${lobbyId}.`);
-      return;
+      throw new BadRequestException(`No players found in lobby ${lobbyId}`);
     }
 
     if (players.length <= 5) {
       this.logger.log(`Minimum 5 players in lobby ${lobbyId}`);
-      return;
+      throw new BadRequestException(`Minimum 5 players in lobby ${lobbyId}`);
     }
 
     players = this.sort(players);
