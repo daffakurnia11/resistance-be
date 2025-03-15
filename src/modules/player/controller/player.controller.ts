@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UsePipes } from '@nestjs/common';
 import { PlayerService } from '../service/player.service';
 import { ApiBody } from '@nestjs/swagger';
 import { JoinLobbyDto, LeaveLobbyDto } from '../dto/player.dto';
@@ -56,9 +56,9 @@ export class PlayerController {
     }
   }
 
-  @Post('reveal')
+  @Get('reveal')
   @ApiBody({ type: PlayerRevealDTO })
-  async reveal(@Body() payload: PlayerRevealDTO) {
+  async reveal(@Query() payload: PlayerRevealDTO) {
     try {
       return await this.playerService.reveal(payload);
     } catch (err) {
