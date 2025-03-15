@@ -19,7 +19,7 @@ export class PlayerRoleGeneratorService {
       throw new BadRequestException(`No players found in lobby ${lobbyId}`);
     }
 
-    if (players.length <= 5) {
+    if (players.length < 5) {
       this.logger.log(`Minimum 5 players in lobby ${lobbyId}`);
       throw new BadRequestException(`Minimum 5 players in lobby ${lobbyId}`);
     }
