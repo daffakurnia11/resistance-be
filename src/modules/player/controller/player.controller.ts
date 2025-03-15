@@ -57,7 +57,6 @@ export class PlayerController {
   }
 
   @Get('reveal')
-  @ApiBody({ type: PlayerRevealDTO })
   async reveal(@Query() payload: PlayerRevealDTO) {
     try {
       return await this.playerService.reveal(payload);
