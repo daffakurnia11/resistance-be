@@ -38,7 +38,7 @@ export class PlayerRoleGeneratorService {
   protected defineRoles(players: Player[]): PlayerWithRoleType[] {
     return players.map((each, index) => ({
       ...each,
-      role: index % 2 === 0 ? PlayerRoleEnum.SPY : PlayerRoleEnum.RESISTANCE,
+      role: index % 2 === 1 ? PlayerRoleEnum.SPY : PlayerRoleEnum.RESISTANCE,
     }));
   }
 }
