@@ -24,6 +24,15 @@ export class PlayerRevealManager {
       throw new NotFoundException('Lobby not found');
     }
 
+    if (player.role === 'SPY') {
+      const teammate = await this.playerRepository
+        .findManyByWhere({ lobby_id, role: 'SPY' })
+        .then((players) => {
+          return players.filter((p) => p.id !== player_id);
+        });
+      return Promise.resolve({ ...player, teammate });
+    }
+
     return Promise.resolve(player);
   }
 }
