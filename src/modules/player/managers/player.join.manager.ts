@@ -21,7 +21,7 @@ export class PlayerJoinManager {
     const playerCount = await this.playerRepository.countPlayerInLobby(
       lobby.id,
     );
-    if (playerCount > 5) {
+    if (playerCount >= 5) {
       throw new BadRequestException('Oops! The lobby has been full.');
     }
 
