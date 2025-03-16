@@ -27,6 +27,16 @@ export class LobbyController {
     }
   }
 
+  @Get(':roomCode/player')
+  async getPlayers(@Param('roomCode') roomCode: string) {
+    try {
+      return await this.lobbyService.getPlayers(roomCode);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
   @Get(':room_code')
   async get(@Param('room_code') room_code: string) {
     try {

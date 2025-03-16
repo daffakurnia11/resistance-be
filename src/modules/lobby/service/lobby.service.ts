@@ -83,4 +83,8 @@ export class LobbyService {
 
     return await this.lobbyRepository.softDelete(id);
   }
+
+  async getPlayers(roomCode: string) {
+    return await this.lobbyRepository.getWithPlayer(roomCode);
+  }
 }
