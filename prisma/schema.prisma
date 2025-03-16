@@ -66,6 +66,7 @@ model Player {
 
 enum MissionStatusEnum {
   OPEN
+  // TODO: Add new status : ASSIGNING, VOTING
   IN_PLAY
   CLOSE
 }
