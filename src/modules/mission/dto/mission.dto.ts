@@ -11,8 +11,6 @@ export class MissionDTO implements Mission {
 
   status: $Enums.MissionStatusEnum;
 
-  @ApiProperty({ required: true })
-  @IsUUID()
   leader_id: string;
 
   @ApiProperty({ required: true })

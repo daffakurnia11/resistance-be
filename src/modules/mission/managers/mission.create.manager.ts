@@ -14,28 +14,30 @@ export class MissionCreateManager {
   ) {}
 
   async execute(payload: MissionDTO) {
-    const players = await this.playerRepo.findManyByWhere({
-      lobby_id: payload.lobby_id,
-      deleted_at: null,
-      role: null,
-    });
-    if (players.length) {
-      throw new BadRequestException('Lobby is still in progress');
-    }
+    try {
+      const record = await this.missionRepo.getOneRelationedByWhere({
+        lobby_id: payload.lobby_id,
+      });
 
-    // create mission
-    await this.bulkCreateMission(payload);
+      if (record) {
+        throw new BadRequestException('Lobby is still in progress.');
+      }
+
+      await this.bulkCreateMission(payload);
+      return Promise.resolve(true);
+    } catch (err) {
+      console.log(err);
+      return Promise.reject(err);
+    }
   }
 
   protected async bulkCreateMission(payload: MissionDTO) {
-    const initialLeaderId = payload.leader_id;
     payload.leader_id = null as never;
     payload.status = MissionStatusEnum.OPEN;
 
     let missions = new Array(5).fill(payload) as MissionDTO[];
 
     missions[0].status = MissionStatusEnum.IN_PLAY;
-    missions[0].leader_id = initialLeaderId;
 
     // assign lead to each mission
     missions = await this.assignRandomLeaderToMissions(payload, missions);
