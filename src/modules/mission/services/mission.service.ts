@@ -21,8 +21,14 @@ export class MissionService {
     return await this.createManager.execute(payload);
   }
 
-  async getOneById(roomCode: string): Promise<MissionRelationed> {
-    return await this.getOneByIdManager.execute(roomCode);
+  async getOneByRoomCode(roomCode: string): Promise<MissionRelationed> {
+    return await this.getOneByIdManager.execute({
+      lobby: { room_code: roomCode },
+    });
+  }
+
+  async getOneById(missionId: string): Promise<MissionRelationed> {
+    return await this.getOneByIdManager.execute({ id: missionId });
   }
 
   async assignPlayers(

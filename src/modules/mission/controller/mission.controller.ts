@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { MissionService } from '../services/mission.service';
 import { ApiBody } from '@nestjs/swagger';
 import { MissionDTO } from '../dto/mission.dto';
@@ -14,6 +14,16 @@ export class MissionController {
   async create(@Body() payload: MissionDTO) {
     try {
       return await this.missionService.create(payload);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  @Get(':missionId')
+  async get(@Param('missionId') missionId: string) {
+    try {
+      return await this.missionService.getOneById(missionId);
     } catch (err) {
       console.error(err);
       throw err;
