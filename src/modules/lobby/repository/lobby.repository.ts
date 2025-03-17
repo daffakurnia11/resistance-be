@@ -20,6 +20,15 @@ export class LobbyRepository {
     });
   }
 
+  async getWithMission(roomCode: string) {
+    return await this.prismaService.lobby.findUnique({
+      where: { room_code: roomCode },
+      include: {
+        missions: true,
+      },
+    });
+  }
+
   async findOne(room_code: string) {
     return await this.prismaService.lobby.findUniqueOrThrow({
       where: { room_code },

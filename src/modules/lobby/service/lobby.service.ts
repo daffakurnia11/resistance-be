@@ -87,4 +87,8 @@ export class LobbyService {
   async getPlayers(roomCode: string) {
     return await this.lobbyRepository.getWithPlayer(roomCode);
   }
+
+  async getMissions(roomCode: string) {
+    return await this.lobbyRepository.getWithMission(roomCode);
+  }
 }

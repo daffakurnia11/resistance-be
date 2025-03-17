@@ -27,6 +27,16 @@ export class LobbyController {
     }
   }
 
+  @Get(':roomCode/mission')
+  async getMission(@Param('roomCode') roomCode: string) {
+    try {
+      return await this.lobbyService.getMissions(roomCode);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
   @Get(':roomCode/player')
   async getPlayers(@Param('roomCode') roomCode: string) {
     try {
