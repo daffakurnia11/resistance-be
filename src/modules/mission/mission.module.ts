@@ -7,6 +7,7 @@ import { MissionController } from './controller/mission.controller';
 import { MissionService } from './services/mission.service';
 import { MissionCreateManager } from './managers/mission.create.manager';
 import { PlayerRepository } from '../player/repository/player.repository';
+import { MissionGetOneByIdManager } from './managers/mission.get.one.by.id.manager';
 
 const modules = [PrismaModule, CqrsModule];
 
@@ -19,7 +20,7 @@ const repositories: Provider[] = [
 
 const services: Provider[] = [MissionService];
 
-const managers = [MissionCreateManager];
+const managers = [MissionCreateManager, MissionGetOneByIdManager];
 
 const eventHandlers: Provider[] = [];
 
