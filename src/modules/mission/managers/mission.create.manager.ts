@@ -35,9 +35,15 @@ export class MissionCreateManager {
     payload.leader_id = null as never;
     payload.status = MissionStatusEnum.OPEN;
 
-    let missions = new Array(5).fill(payload) as MissionDTO[];
-
-    missions[0].status = MissionStatusEnum.IN_PLAY;
+    let missions = (new Array(5).fill(payload) as MissionDTO[]).map(
+      (each, index) => ({
+        ...each,
+        status:
+          index === 0
+            ? MissionStatusEnum.ASSIGNING
+            : (MissionStatusEnum.OPEN as MissionStatusEnum),
+      }),
+    );
 
     // assign lead to each mission
     missions = await this.assignRandomLeaderToMissions(payload, missions);

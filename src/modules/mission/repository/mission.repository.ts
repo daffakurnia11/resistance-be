@@ -23,7 +23,7 @@ export class MissionRepository implements MissionRepositoryInterface {
       data: {
         leader_id: payload.leader_id,
         lobby_id: payload.lobby_id,
-        status: MissionStatusEnum.OPEN,
+        status: payload.status,
       },
     });
   }
