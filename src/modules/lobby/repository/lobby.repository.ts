@@ -28,7 +28,11 @@ export class LobbyRepository {
           include: {
             leader: true,
             lobby: true,
-            mission_players: true,
+            mission_players: {
+              include: {
+                player: true,
+              },
+            },
             mission_votes: true,
           },
           orderBy: {
