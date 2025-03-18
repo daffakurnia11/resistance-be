@@ -11,6 +11,8 @@ import { MissionGetOneByIdManager } from './managers/mission.get.one.by.id.manag
 import { MissionAssignManager } from './managers/mission.assign.manager';
 import { MissionVoteManager } from './managers/mission.vote.manager';
 import { MissionResultManager } from './managers/mission.result.manager';
+import { MissionGateway } from './gateways/mission.gateway';
+import { MissionUpdatedEventHandler } from './events/mission.updated.event.handler';
 
 const modules = [PrismaModule, CqrsModule];
 
@@ -31,8 +33,9 @@ const managers = [
   MissionResultManager,
 ];
 
-const eventHandlers: Provider[] = [];
+const eventHandlers: Provider[] = [MissionUpdatedEventHandler];
 
+const gateways: Provider[] = [MissionGateway];
 @Module({
   imports: [...modules],
   exports: [...eventHandlers],
@@ -43,6 +46,7 @@ const eventHandlers: Provider[] = [];
     ...services,
     ...eventHandlers,
     ...managers,
+    ...gateways,
   ],
 })
 export class MissionModule {}
