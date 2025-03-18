@@ -92,6 +92,21 @@ export class MissionRepository implements MissionRepositoryInterface {
     return Promise.resolve(result);
   }
 
+  async updateMissionStatus(
+    missionId: string,
+    status: MissionStatusEnum,
+  ): Promise<MissionRelationed> {
+    const result = await this.prismaService.mission.update({
+      where: { id: missionId },
+      include: this.defaultInclude,
+      data: {
+        status,
+      },
+    });
+
+    return Promise.resolve(result);
+  }
+
   async getManyByWhere(where: Prisma.MissionWhereInput): Promise<Mission[]> {
     return await this.prismaService.mission.findMany({ where });
   }
