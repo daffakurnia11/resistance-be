@@ -13,6 +13,8 @@ export class MissionDTO implements Mission {
 
   leader_id: string;
 
+  name: string;
+
   @ApiProperty({ required: true })
   @IsUUID()
   lobby_id: string;

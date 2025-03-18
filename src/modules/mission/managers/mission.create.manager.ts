@@ -38,6 +38,7 @@ export class MissionCreateManager {
     let missions = (new Array(5).fill(payload) as MissionDTO[]).map(
       (each, index) => ({
         ...each,
+        name: `Mission ${index + 1}`,
         status:
           index === 0
             ? MissionStatusEnum.ASSIGNING
