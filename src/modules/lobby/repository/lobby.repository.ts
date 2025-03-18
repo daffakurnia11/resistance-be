@@ -31,6 +31,9 @@ export class LobbyRepository {
             mission_players: true,
             mission_votes: true,
           },
+          orderBy: {
+            name: 'asc',
+          },
         },
       },
     });
