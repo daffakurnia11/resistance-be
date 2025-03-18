@@ -30,6 +30,16 @@ export class MissionController {
     }
   }
 
+  @Get(':missionId/result')
+  async getResult(@Param('missionId') missionId: string) {
+    try {
+      return await this.missionService.getResult(missionId);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
   @Post(':missionId/assign')
   @ApiBody({ type: MissionAssignDTO })
   async assign(

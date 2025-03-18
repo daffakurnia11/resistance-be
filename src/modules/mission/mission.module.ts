@@ -10,6 +10,7 @@ import { PlayerRepository } from '../player/repository/player.repository';
 import { MissionGetOneByIdManager } from './managers/mission.get.one.by.id.manager';
 import { MissionAssignManager } from './managers/mission.assign.manager';
 import { MissionVoteManager } from './managers/mission.vote.manager';
+import { MissionResultManager } from './managers/mission.result.manager';
 
 const modules = [PrismaModule, CqrsModule];
 
@@ -27,6 +28,7 @@ const managers = [
   MissionGetOneByIdManager,
   MissionVoteManager,
   MissionAssignManager,
+  MissionResultManager,
 ];
 
 const eventHandlers: Provider[] = [];

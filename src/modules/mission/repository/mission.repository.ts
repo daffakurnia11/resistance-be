@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { MissionRepositoryInterface } from '../interface/mission.repository.interface';
 import { MissionDTO } from '../dto/mission.dto';
-import { MissionStatusEnum, Prisma } from '@prisma/client';
+import { Mission, Prisma } from '@prisma/client';
 import { MissionRelationed } from '../types/mission.type';
 import { MissionAssignDTO } from '../dto/mission.assign.dto';
 import { MissionVoteDTO } from '../dto/mission.vote.dto';
@@ -67,7 +67,6 @@ export class MissionRepository implements MissionRepositoryInterface {
     missionId: string,
     payload: MissionVoteDTO,
   ): Promise<MissionRelationed> {
-    console.log({ missionId, payload });
     const result = await this.prismaService.mission.update({
       where: { id: missionId },
       include: this.defaultInclude,
@@ -85,5 +84,9 @@ export class MissionRepository implements MissionRepositoryInterface {
     });
 
     return Promise.resolve(result);
+  }
+
+  async getManyByWhere(where: Prisma.MissionWhereInput): Promise<Mission[]> {
+    return await this.prismaService.mission.findMany({ where });
   }
 }
