@@ -21,6 +21,7 @@ export class MissionRepository implements MissionRepositoryInterface {
   async create(payload: MissionDTO) {
     await this.prismaService.mission.create({
       data: {
+        name: payload.name,
         leader_id: payload.leader_id,
         lobby_id: payload.lobby_id,
         status: payload.status,
