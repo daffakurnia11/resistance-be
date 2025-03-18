@@ -26,14 +26,36 @@ export class LobbyRepository {
       include: {
         missions: {
           include: {
-            leader: true,
+            leader: {
+              select: {
+                name: true,
+                id: true,
+                room_role: true,
+              },
+            },
             lobby: true,
             mission_players: {
               include: {
-                player: true,
+                player: {
+                  select: {
+                    name: true,
+                    id: true,
+                    room_role: true,
+                  },
+                },
               },
             },
-            mission_votes: true,
+            mission_votes: {
+              include: {
+                player: {
+                  select: {
+                    name: true,
+                    id: true,
+                    room_role: true,
+                  },
+                },
+              },
+            },
           },
           orderBy: {
             name: 'asc',
