@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { MissionRepositoryInterface } from '../interface/mission.repository.interface';
 import { MissionDTO } from '../dto/mission.dto';
-import { Mission, Prisma } from '@prisma/client';
+import { Mission, MissionStatusEnum, Prisma } from '@prisma/client';
 import { MissionRelationed } from '../types/mission.type';
 import { MissionAssignDTO } from '../dto/mission.assign.dto';
 import { MissionVoteDTO } from '../dto/mission.vote.dto';
@@ -14,7 +14,11 @@ export class MissionRepository implements MissionRepositoryInterface {
   protected readonly defaultInclude: Prisma.MissionInclude = {
     leader: true,
     lobby: true,
-    mission_players: true,
+    mission_players: {
+      include: {
+        player: true,
+      },
+    },
     mission_votes: true,
   };
 
@@ -50,6 +54,7 @@ export class MissionRepository implements MissionRepositoryInterface {
       where: { id: missionId },
       include: this.defaultInclude,
       data: {
+        status: MissionStatusEnum.ASSIGNING,
         mission_players: {
           createMany: {
             skipDuplicates: true,
