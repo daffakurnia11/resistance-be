@@ -46,12 +46,8 @@ export class MissionCreateManager {
       }),
     );
 
-    console.log('before assign',missions)
-
     // assign lead to each mission
     missions = await this.assignRandomLeaderToMissions(payload, missions);
-
-    console.log('after assign',missions)
 
     // create bulk
     const promises = missions.map((each) => this.missionRepo.create(each));
