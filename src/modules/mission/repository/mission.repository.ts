@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@modules/prisma/prisma.service';
+import { PrismaService } from '../..//prisma/prisma.service';
 import { MissionRepositoryInterface } from '../interface/mission.repository.interface';
 import { MissionDTO } from '../dto/mission.dto';
 import { Mission, MissionStatusEnum, Prisma } from '@prisma/client';
