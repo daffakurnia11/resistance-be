@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@modules/prisma/prisma.service';
+import { PrismaService } from '../../../modules/prisma/prisma.service';
 import { LobbyLogDTO } from '../dto/lobby.log.dto';
 import { LobbyLogRepositoryInterface } from '../interface/lobby.log.repository.interface';
 
