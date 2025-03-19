@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { LobbyRepository } from '@src/modules/lobby/repository/lobby.repository';
+import { LobbyRepository } from '../../lobby/repository/lobby.repository';
 import { PlayerRepository } from '../repository/player.repository';
 import { PlayerRevealDTO } from '../dto/player.reveal.dto';
 

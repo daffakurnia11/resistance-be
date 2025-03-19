@@ -1,5 +1,5 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { LobbyRepository } from '@src/modules/lobby/repository/lobby.repository';
+import { LobbyRepository } from '../../lobby/repository/lobby.repository';
 import { PlayerGateway } from '../gateway/player.gateway';
 
 export class PlayerJoinAndUpdateEvent {

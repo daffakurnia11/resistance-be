@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { LobbyLogDTO } from '../dto/lobby.log.dto';
 import { LOBBY_LOG_DI } from '../di/lobby.log.di';
 import { LobbyLogRepositoryInterface } from '../interface/lobby.log.repository.interface';
-import { PlayerGateway } from '@src/modules/player/gateway/player.gateway';
+import { PlayerGateway } from '../../player/gateway/player.gateway';
 
 @Injectable()
 export class LobbyLogService {

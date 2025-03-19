@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { MISSION_DI } from '../di/mission.di';
 import { MissionRepositoryInterface } from '../interface/mission.repository.interface';
-import { PlayerRepository } from '@src/modules/player/repository/player.repository';
+import { PlayerRepository } from '../../player/repository/player.repository';
 import { MissionDTO } from '../dto/mission.dto';
 import { MissionStatusEnum } from '@prisma/client';
 

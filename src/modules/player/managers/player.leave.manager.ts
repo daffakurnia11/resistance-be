@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PlayerKickManager } from './player.kick.manager';
 import { EventBus } from '@nestjs/cqrs';
-import { LobbyRepository } from '@src/modules/lobby/repository/lobby.repository';
+import { LobbyRepository } from '../../lobby/repository/lobby.repository';
 import { PlayerGateway } from '../gateway/player.gateway';
 import { PlayerRepository } from '../repository/player.repository';
 import { PlayerLeaveDTO } from '../dto/player.dto';
-import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
+import { LobbyLogAction } from '../../lobby-log/dto/lobby.log.dto';
 
 @Injectable()
 export class PlayerLeaveManager extends PlayerKickManager {

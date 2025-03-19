@@ -4,10 +4,10 @@ import { PlayerRepository } from 'src/modules/player/repository/player.repositor
 import { v7 as uuidv7 } from 'uuid';
 import { PlayerGateway } from 'src/modules/player/gateway/player.gateway';
 import { EventBus, IEvent } from '@nestjs/cqrs';
-import { LobbyLogEvent } from '@src/modules/lobby-log/events/lobby.log.event.handler';
-import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
+import { LobbyLogEvent } from '../../lobby-log/events/lobby.log.event.handler';
+import { LobbyLogAction } from '../../lobby-log/dto/lobby.log.dto';
 import { Lobby, Player } from '@prisma/client';
-import { PlayerRoomRole } from '@src/modules/player/dto/player.dto';
+import { PlayerRoomRole } from '../../player/dto/player.dto';
 
 @Injectable()
 export class LobbyService {

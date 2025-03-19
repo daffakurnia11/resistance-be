@@ -3,8 +3,8 @@ import { PlayerRepository } from '../repository/player.repository';
 import { PlayerRoleGeneratorService } from '../service/player.role.generator.service';
 import { PlayerAssignRoleDTO } from '../dto/player.assign.role.dto';
 import { EventBus } from '@nestjs/cqrs';
-import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
-import { LobbyLogEvent } from '@src/modules/lobby-log/events/lobby.log.event.handler';
+import { LobbyLogAction } from '../../lobby-log/dto/lobby.log.dto';
+import { LobbyLogEvent } from '../../lobby-log/events/lobby.log.event.handler';
 
 @Injectable()
 export class PlayerAssignManager {

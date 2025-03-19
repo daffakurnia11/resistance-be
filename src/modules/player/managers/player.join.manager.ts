@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PlayerRepository } from '../repository/player.repository';
-import { LobbyRepository } from '@src/modules/lobby/repository/lobby.repository';
+import { LobbyRepository } from '../../lobby/repository/lobby.repository';
 import { EventBus } from '@nestjs/cqrs';
 import { PlayerJoinDTO, PlayerRoomRole } from '../dto/player.dto';
 import { v7 as uuidv7 } from 'uuid';
-import { LobbyLogEvent } from '@src/modules/lobby-log/events/lobby.log.event.handler';
-import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
+import { LobbyLogEvent } from '../../lobby-log/events/lobby.log.event.handler';
+import { LobbyLogAction } from '../../lobby-log/dto/lobby.log.dto';
 import { PlayerJoinAndUpdateEvent } from '../events/player.join.and.update.event.handler';
 
 @Injectable()
