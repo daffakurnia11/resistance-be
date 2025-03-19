@@ -15,6 +15,9 @@ export class PlayerRepository {
         name: data.name,
         lobby_id: data.lobby_id,
         room_role: data.room_role,
+        created_at: new Date(),
+        updated_at: new Date(),
+        deleted_at: null,
       },
     });
   }

@@ -29,6 +29,7 @@ export class MissionRepository implements MissionRepositoryInterface {
         leader_id: payload.leader_id,
         lobby_id: payload.lobby_id,
         status: payload.status,
+        created_at: new Date(),
       },
     });
   }
@@ -60,6 +61,7 @@ export class MissionRepository implements MissionRepositoryInterface {
             skipDuplicates: true,
             data: payload.player_ids.map((playerId) => ({
               player_id: playerId,
+              created_at: new Date(),
             })),
           },
         },
@@ -83,6 +85,7 @@ export class MissionRepository implements MissionRepositoryInterface {
             data: payload.mission_players.map((playerId) => ({
               vote: payload.vote,
               player_id: playerId,
+              created_at: new Date(),
             })),
           },
         },

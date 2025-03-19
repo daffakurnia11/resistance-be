@@ -9,22 +9,23 @@ export class LobbyRepository {
 
   async create(data: LobbyCreateDTO) {
     return await this.prismaService.lobby.create({
-      data: { id: data.id, room_code: data.room_code },
+      data: { room_code: data.room_code, created_at: new Date() },
     });
   }
 
   async getWithPlayer(room_code: string) {
-    return await this.prismaService.lobby.findUnique({
-      where: { room_code },
+    return await this.prismaService.lobby.findFirst({
+      where: { room_code, deleted_at: null },
       include: { players: { where: { deleted_at: null } } },
     });
   }
 
   async getWithMission(roomCode: string) {
-    return await this.prismaService.lobby.findUnique({
-      where: { room_code: roomCode },
+    return await this.prismaService.lobby.findFirst({
+      where: { room_code: roomCode, deleted_at: null },
       include: {
         missions: {
+          where: { deleted_at: null },
           include: {
             leader: {
               select: {
@@ -66,7 +67,7 @@ export class LobbyRepository {
   }
 
   async findOne(room_code: string) {
-    return await this.prismaService.lobby.findUniqueOrThrow({
+    return await this.prismaService.lobby.findFirstOrThrow({
       where: { room_code },
     });
   }

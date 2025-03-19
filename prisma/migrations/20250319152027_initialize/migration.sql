@@ -2,7 +2,7 @@
 CREATE TABLE `lobbies` (
     `id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP NOT NULL,
-    `updated_at` TIMESTAMP NOT NULL,
+    `updated_at` DATETIME NOT NULL,
     `deleted_at` TIMESTAMP NULL,
     `room_code` TEXT NOT NULL,
 
@@ -16,7 +16,7 @@ CREATE TABLE `lobby_logs` (
     `lobby_id` VARCHAR(191) NOT NULL,
     `action` VARCHAR(11) NOT NULL,
     `created_at` TIMESTAMP NOT NULL,
-    `updated_at` TIMESTAMP NOT NULL,
+    `updated_at` DATETIME NOT NULL,
     `deleted_at` TIMESTAMP NULL,
 
     PRIMARY KEY (`id`)
@@ -26,7 +26,7 @@ CREATE TABLE `lobby_logs` (
 CREATE TABLE `players` (
     `id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP NOT NULL,
-    `updated_at` TIMESTAMP NOT NULL,
+    `updated_at` DATETIME NOT NULL,
     `deleted_at` TIMESTAMP NULL,
     `role` ENUM('RESISTANCE', 'SPY') NULL,
     `name` TEXT NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE `missions` (
     `result` ENUM('SUCCESS', 'FAIL') NULL,
     `name` VARCHAR(255) NULL,
     `created_at` TIMESTAMP NOT NULL,
-    `updated_at` TIMESTAMP NOT NULL,
+    `updated_at` DATETIME NOT NULL,
     `deleted_at` TIMESTAMP NULL,
     `leader_id` VARCHAR(191) NOT NULL,
     `lobby_id` VARCHAR(191) NOT NULL,
@@ -67,7 +67,7 @@ CREATE TABLE `mission_players` (
     `player_id` VARCHAR(191) NOT NULL,
     `mission_id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP NOT NULL,
-    `updated_at` TIMESTAMP NOT NULL,
+    `updated_at` DATETIME NOT NULL,
     `deleted_at` TIMESTAMP NULL,
 
     PRIMARY KEY (`id`)
@@ -80,7 +80,7 @@ CREATE TABLE `mission_votes` (
     `mission_id` VARCHAR(191) NOT NULL,
     `vote` ENUM('APPROVE', 'REJECT') NOT NULL,
     `created_at` TIMESTAMP NOT NULL,
-    `updated_at` TIMESTAMP NOT NULL,
+    `updated_at` DATETIME NOT NULL,
     `deleted_at` TIMESTAMP NULL,
 
     PRIMARY KEY (`id`)
@@ -92,7 +92,7 @@ CREATE TABLE `mission_vote_logs` (
     `mission_vote_id` VARCHAR(191) NOT NULL,
     `mission_player_id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP NOT NULL,
-    `updated_at` TIMESTAMP NOT NULL,
+    `updated_at` DATETIME NOT NULL,
     `deleted_at` TIMESTAMP NULL,
 
     PRIMARY KEY (`id`)

@@ -13,6 +13,7 @@ export class LobbyLogRepository implements LobbyLogRepositoryInterface {
         lobby_id: payload.lobby_id,
         player_id: payload.player_id,
         action: payload.action,
+        created_at: new Date(),
       },
     });
   }
