@@ -17,14 +17,14 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useWebSocketAdapter(new IoAdapter(app));
 
-  const config = new DocumentBuilder()
-    .setTitle('Resistance API')
-    .setDescription('The Resistance Game API description')
-    .setVersion('1.0')
-    .build();
+  // const config = new DocumentBuilder()
+  //   .setTitle('Resistance API')
+  //   .setDescription('The Resistance Game API description')
+  //   .setVersion('1.0')
+  //   .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  // const document = SwaggerModule.createDocument(app, config);
+  // SwaggerModule.setup('api', app, document);
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
