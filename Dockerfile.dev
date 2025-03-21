@@ -1,0 +1,14 @@
+FROM node:20 AS development
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm install
+
+COPY . .
+RUN npx prisma generate
+
+# Expose the app port
+EXPOSE 8000
+
+# Start the app with hot-reloading
+CMD npx prisma migrate deploy && npm run start:dev

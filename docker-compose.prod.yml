@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  postgresql:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: resistance
+    ports:
+      - '5432:5432'
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - '8000:8000'
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: 'postgresql://root:root@postgresql:5432/resistance'
+    depends_on:
+      - postgresql
+    command: >
+      sh -c "npx prisma migrate deploy && node dist/main"
