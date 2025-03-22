@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { MissionService } from '../services/mission.service';
 import { ApiBody } from '@nestjs/swagger';
-import { MissionDTO } from '../dto/mission.dto';
+import { MissionStartDTO } from '../dto/mission.dto';
 import { MissionAssignDTO } from '../dto/mission.assign.dto';
 import { MissionVoteDTO } from '../dto/mission.vote.dto';
 
@@ -10,8 +10,8 @@ export class MissionController {
   constructor(protected readonly missionService: MissionService) {}
 
   @Post()
-  @ApiBody({ type: MissionDTO })
-  async create(@Body() payload: MissionDTO) {
+  @ApiBody({ type: MissionStartDTO })
+  async create(@Body() payload: MissionStartDTO) {
     try {
       return await this.missionService.create(payload);
     } catch (err) {

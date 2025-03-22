@@ -2,6 +2,16 @@ import { ApiProperty } from '@nestjs/swagger';
 import { $Enums, Mission } from '@prisma/client';
 import { IsUUID } from 'class-validator';
 
+export class MissionStartDTO {
+  @ApiProperty({ required: true })
+  @IsUUID()
+  lobby_id: string;
+
+  @ApiProperty({ required: true })
+  @IsUUID()
+  player_id: string;
+}
+
 export class MissionDTO implements Mission {
   result: $Enums.MissionEnum | null;
   id: string;

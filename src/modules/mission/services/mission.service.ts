@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MissionDTO } from '../dto/mission.dto';
+import { MissionStartDTO } from '../dto/mission.dto';
 import { MissionCreateManager } from '../managers/mission.create.manager';
 import { MissionRelationed } from '../types/mission.type';
 import { MissionGetOneByIdManager } from '../managers/mission.get.one.by.id.manager';
@@ -19,7 +19,7 @@ export class MissionService {
     protected readonly resultManager: MissionResultManager,
   ) {}
 
-  async create(payload: MissionDTO): Promise<boolean> {
+  async create(payload: MissionStartDTO): Promise<boolean> {
     return await this.createManager.execute(payload);
   }
 

@@ -2,8 +2,11 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { MISSION_DI } from '../di/mission.di';
 import { MissionRepositoryInterface } from '../interface/mission.repository.interface';
 import { PlayerRepository } from '@src/modules/player/repository/player.repository';
-import { MissionDTO } from '../dto/mission.dto';
+import { MissionDTO, MissionStartDTO } from '../dto/mission.dto';
 import { MissionStatusEnum } from '@prisma/client';
+import { LobbyLogEvent } from '@src/modules/lobby-log/events/lobby.log.event.handler';
+import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
+import { EventBus } from '@nestjs/cqrs';
 
 @Injectable()
 export class MissionCreateManager {
@@ -11,9 +14,10 @@ export class MissionCreateManager {
     @Inject(MISSION_DI)
     protected readonly missionRepo: MissionRepositoryInterface,
     protected readonly playerRepo: PlayerRepository,
+    protected readonly eventBus: EventBus,
   ) {}
 
-  async execute(payload: MissionDTO) {
+  async execute(payload: MissionStartDTO) {
     try {
       const record = await this.missionRepo.getOneRelationedByWhere({
         lobby_id: payload.lobby_id,
@@ -23,6 +27,14 @@ export class MissionCreateManager {
         throw new BadRequestException('Lobby is still in progress.');
       }
 
+      this.eventBus.publish(
+        new LobbyLogEvent({
+          action: LobbyLogAction.START,
+          lobby_id: payload.lobby_id,
+          player_id: payload.player_id,
+        }),
+      );
+
       await this.bulkCreateMission(payload);
       return Promise.resolve(true);
     } catch (err) {
@@ -31,10 +43,7 @@ export class MissionCreateManager {
     }
   }
 
-  protected async bulkCreateMission(payload: MissionDTO) {
-    payload.leader_id = null as never;
-    payload.status = MissionStatusEnum.OPEN;
-
+  protected async bulkCreateMission(payload: MissionStartDTO) {
     let missions = (new Array(5).fill(payload) as MissionDTO[]).map(
       (each, index) => ({
         ...each,
@@ -55,7 +64,7 @@ export class MissionCreateManager {
   }
 
   protected async assignRandomLeaderToMissions(
-    payload: MissionDTO,
+    payload: MissionStartDTO,
     missions: MissionDTO[],
   ) {
     let players = await this.playerRepo.findManyByWhere({
