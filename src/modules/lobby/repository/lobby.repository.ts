@@ -44,6 +44,9 @@ export class LobbyRepository {
                   },
                 },
               },
+              where: {
+                deleted_at: null,
+              },
             },
             mission_votes: {
               include: {
@@ -54,6 +57,9 @@ export class LobbyRepository {
                     room_role: true,
                   },
                 },
+              },
+              where: {
+                deleted_at: null,
               },
             },
           },

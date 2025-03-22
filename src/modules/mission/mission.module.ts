@@ -13,6 +13,10 @@ import { MissionVoteManager } from './managers/mission.vote.manager';
 import { MissionResultManager } from './managers/mission.result.manager';
 import { MissionGateway } from './gateways/mission.gateway';
 import { MissionUpdatedEventHandler } from './events/mission.updated.event.handler';
+import { MISSION_VOTE_DI } from '../mission/di/mission.vote.di';
+import { MissionVoteRepository } from './repository/mission.vote.repository';
+import { MISSION_PLAYER_DI } from './di/mission.player.di';
+import { MissionPlayerRepository } from './repository/mission.player.repository';
 
 const modules = [PrismaModule, CqrsModule];
 
@@ -21,6 +25,8 @@ const controllers = [MissionController];
 const repositories: Provider[] = [
   PlayerRepository,
   { provide: MISSION_DI, useClass: MissionRepository },
+  { provide: MISSION_VOTE_DI, useClass: MissionVoteRepository },
+  { provide: MISSION_PLAYER_DI, useClass: MissionPlayerRepository },
 ];
 
 const services: Provider[] = [MissionService];

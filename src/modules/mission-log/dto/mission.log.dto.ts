@@ -1,6 +1,7 @@
 export enum MissionLogAction {
   ASSIGNED = 'ASSIGNED',
   APPROVED = 'APPROVED',
+  REASSIGNING = 'REASSIGNING',
   REJECTED = 'REJECTED',
   START = 'START',
   WAITING = 'WAITING',
