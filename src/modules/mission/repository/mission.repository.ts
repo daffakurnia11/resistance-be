@@ -54,7 +54,7 @@ export class MissionRepository implements MissionRepositoryInterface {
       where: { id: missionId },
       include: this.defaultInclude,
       data: {
-        status: MissionStatusEnum.ASSIGNING,
+        status: MissionStatusEnum.VOTING,
         mission_players: {
           createMany: {
             skipDuplicates: true,
@@ -78,12 +78,9 @@ export class MissionRepository implements MissionRepositoryInterface {
       include: this.defaultInclude,
       data: {
         mission_votes: {
-          createMany: {
-            skipDuplicates: true,
-            data: payload.mission_players.map((playerId) => ({
-              vote: payload.vote,
-              player_id: playerId,
-            })),
+          create: {
+            player_id: payload.player_id,
+            vote: payload.vote,
           },
         },
       },
