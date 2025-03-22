@@ -6,7 +6,6 @@ import { PlayerService } from './service/player.service';
 import { PlayerController } from './controller/player.controller';
 import { LobbyRepository } from '../lobby/repository/lobby.repository';
 import { CqrsModule } from '@nestjs/cqrs';
-import { LobbyLogModule } from '../lobby-log/lobby.log.module';
 import { PlayerRoleGeneratorService } from './service/player.role.generator.service';
 import { PlayerJoinManager } from './managers/player.join.manager';
 import { PlayerAssignManager } from './managers/player.assign.manager';
@@ -34,7 +33,7 @@ const gateways = [PlayerGateway];
 const events = [PlayerJoinAndUpdateEventHandler];
 
 @Module({
-  imports: [PrismaModule, CqrsModule, LobbyLogModule],
+  imports: [PrismaModule, CqrsModule],
   controllers: [...controllers],
   providers: [
     ...services,

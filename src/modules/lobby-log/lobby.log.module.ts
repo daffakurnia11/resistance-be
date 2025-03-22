@@ -7,6 +7,7 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PlayerGateway } from '../player/gateway/player.gateway';
 import { LobbyRepository } from '../lobby/repository/lobby.repository';
+import { LobbyLogGateway } from './gateway/lobby.log.gateway';
 
 const modules = [PrismaModule, CqrsModule];
 
@@ -17,7 +18,7 @@ const repositories: Provider[] = [
 
 const services: Provider[] = [LobbyLogService, PlayerGateway];
 
-const eventHandlers: Provider[] = [LobbyLogEventHandler];
+const eventHandlers: Provider[] = [LobbyLogEventHandler, LobbyLogGateway];
 
 @Module({
   imports: [...modules],
