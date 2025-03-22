@@ -98,12 +98,16 @@ model Mission {
 }
 
 model MissionLog {
-  id         String  @id @default(uuid()) @db.Uuid
+  id         String    @id @default(uuid()) @db.Uuid
   status     String?
-  mission_id String  @db.Uuid
-  player_id  String  @db.Uuid
-  player     Player  @relation(fields: [player_id], references: [id])
-  mission    Mission @relation(fields: [mission_id], references: [id])
+  mission_id String    @db.Uuid
+  player_id  String    @db.Uuid
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime  @updatedAt @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6) // Nullable
+
+  player  Player  @relation(fields: [player_id], references: [id])
+  mission Mission @relation(fields: [mission_id], references: [id])
 
   @@map("mission_logs")
 }
