@@ -119,6 +119,7 @@ model MissionPlayer {
   created_at        DateTime         @default(now()) @db.Timestamptz(6)
   updated_at        DateTime         @updatedAt @db.Timestamptz(6)
   deleted_at        DateTime?        @db.Timestamptz(6) // Nullable
+  state             MissionEnum?
   player            Player           @relation(fields: [player_id], references: [id])
   mission           Mission          @relation(fields: [mission_id], references: [id])
   mission_vote_logs MissionVoteLog[]

@@ -17,6 +17,7 @@ import { MISSION_VOTE_DI } from '../mission/di/mission.vote.di';
 import { MissionVoteRepository } from './repository/mission.vote.repository';
 import { MISSION_PLAYER_DI } from './di/mission.player.di';
 import { MissionPlayerRepository } from './repository/mission.player.repository';
+import { MissionPlayManager } from './managers/mission.play.manager';
 
 const modules = [PrismaModule, CqrsModule];
 
@@ -37,6 +38,7 @@ const managers = [
   MissionVoteManager,
   MissionAssignManager,
   MissionResultManager,
+  MissionPlayManager
 ];
 
 const eventHandlers: Provider[] = [MissionUpdatedEventHandler];

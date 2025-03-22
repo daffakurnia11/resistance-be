@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { MissionRepositoryInterface } from '../interface/mission.repository.interface';
 import { MissionDTO } from '../dto/mission.dto';
-import { Mission, MissionStatusEnum, Prisma } from '@prisma/client';
+import {
+  Mission,
+  MissionEnum,
+  MissionStatusEnum,
+  Prisma,
+} from '@prisma/client';
 import { MissionRelationed } from '../types/mission.type';
 import { MissionAssignDTO } from '../dto/mission.assign.dto';
 import { MissionVoteDTO } from '../dto/mission.vote.dto';
@@ -18,8 +23,18 @@ export class MissionRepository implements MissionRepositoryInterface {
       include: {
         player: true,
       },
+      where: {
+        deleted_at: null,
+      },
     },
-    mission_votes: true,
+    mission_votes: {
+      include: {
+        player: true,
+      },
+      where: {
+        deleted_at: null,
+      },
+    },
   };
 
   async create(payload: MissionDTO) {
@@ -102,6 +117,22 @@ export class MissionRepository implements MissionRepositoryInterface {
     });
 
     return Promise.resolve(result);
+  }
+
+  async updateMissionResult(
+    missionId: string,
+    result: MissionEnum,
+  ): Promise<MissionRelationed> {
+    const data = await this.prismaService.mission.update({
+      where: { id: missionId },
+      include: this.defaultInclude,
+      data: {
+        status: MissionStatusEnum.CLOSE,
+        result,
+      },
+    });
+
+    return Promise.resolve(data);
   }
 
   async getManyByWhere(where: Prisma.MissionWhereInput): Promise<Mission[]> {

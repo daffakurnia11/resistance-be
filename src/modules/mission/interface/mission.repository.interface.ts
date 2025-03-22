@@ -1,4 +1,9 @@
-import { Mission, MissionStatusEnum, Prisma } from '@prisma/client';
+import {
+  Mission,
+  MissionEnum,
+  MissionStatusEnum,
+  Prisma,
+} from '@prisma/client';
 import { MissionDTO } from '../dto/mission.dto';
 import { MissionRelationed } from '../types/mission.type';
 import { MissionAssignDTO } from '../dto/mission.assign.dto';
@@ -20,6 +25,10 @@ export interface MissionRepositoryInterface {
   updateMissionStatus(
     missionId: string,
     status: MissionStatusEnum,
+  ): Promise<MissionRelationed>;
+  updateMissionResult(
+    missionId: string,
+    result: MissionEnum,
   ): Promise<MissionRelationed>;
   getManyByWhere(where: Prisma.MissionWhereInput): Promise<Mission[]>;
 }

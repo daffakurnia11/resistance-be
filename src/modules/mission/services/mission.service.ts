@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { MissionStartDTO } from '../dto/mission.dto';
 import { MissionCreateManager } from '../managers/mission.create.manager';
-import { MissionRelationed } from '../types/mission.type';
+import {
+  MissionPlayerRelationed,
+  MissionRelationed,
+} from '../types/mission.type';
 import { MissionGetOneByIdManager } from '../managers/mission.get.one.by.id.manager';
 import { MissionVoteDTO } from '../dto/mission.vote.dto';
 import { MissionVoteManager } from '../managers/mission.vote.manager';
 import { MissionAssignDTO } from '../dto/mission.assign.dto';
 import { MissionAssignManager } from '../managers/mission.assign.manager';
 import { MissionResultManager } from '../managers/mission.result.manager';
+import { MissionPlayDTO } from '../dto/mission.play.dto';
+import { MissionPlayManager } from '../managers/mission.play.manager';
 
 @Injectable()
 export class MissionService {
@@ -17,6 +22,7 @@ export class MissionService {
     protected readonly assignManager: MissionAssignManager,
     protected readonly voteManager: MissionVoteManager,
     protected readonly resultManager: MissionResultManager,
+    protected readonly playManager: MissionPlayManager,
   ) {}
 
   async create(payload: MissionStartDTO): Promise<boolean> {
@@ -49,5 +55,12 @@ export class MissionService {
     payload: MissionVoteDTO,
   ): Promise<MissionRelationed> {
     return await this.voteManager.execute(missionId, payload);
+  }
+
+  async play(
+    missionId: string,
+    payload: MissionPlayDTO,
+  ): Promise<MissionPlayerRelationed | null> {
+    return await this.playManager.execute(missionId, payload);
   }
 }

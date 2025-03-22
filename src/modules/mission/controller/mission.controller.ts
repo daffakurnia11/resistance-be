@@ -4,6 +4,7 @@ import { ApiBody } from '@nestjs/swagger';
 import { MissionStartDTO } from '../dto/mission.dto';
 import { MissionAssignDTO } from '../dto/mission.assign.dto';
 import { MissionVoteDTO } from '../dto/mission.vote.dto';
+import { MissionPlayDTO } from '../dto/mission.play.dto';
 
 @Controller({ path: 'mission' })
 export class MissionController {
@@ -62,6 +63,20 @@ export class MissionController {
   ) {
     try {
       return await this.missionService.vote(missionId, payload);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  @Post(':missionId/play')
+  @ApiBody({ type: MissionPlayDTO })
+  async play(
+    @Param('missionId') missionId: string,
+    @Body() payload: MissionPlayDTO,
+  ) {
+    try {
+      return await this.missionService.play(missionId, payload);
     } catch (err) {
       console.error(err);
       throw err;
