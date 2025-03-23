@@ -26,6 +26,9 @@ export class LobbyRepository {
       include: {
         players: true,
         missions: {
+          where: {
+            deleted_at: null,
+          },
           include: {
             leader: {
               select: {

@@ -8,13 +8,16 @@ import { LobbyLogEvent } from '@src/modules/lobby-log/events/lobby.log.event.han
 import { LobbyLogAction } from '@src/modules/lobby-log/dto/lobby.log.dto';
 import { Lobby, Player } from '@prisma/client';
 import { PlayerRoomRole } from '@src/modules/player/dto/player.dto';
+import { MissionRepository } from '@src/modules/mission/repository/mission.repository';
+import { LobbyEndGameDTO } from '../dto/lobby.dto';
 
 @Injectable()
 export class LobbyService {
   constructor(
-    protected lobbyRepository: LobbyRepository,
-    protected playerRepository: PlayerRepository,
-    private readonly playerGateway: PlayerGateway,
+    protected readonly lobbyRepository: LobbyRepository,
+    protected readonly playerRepository: PlayerRepository,
+    protected readonly playerGateway: PlayerGateway,
+    protected readonly missionRepository: MissionRepository,
     protected readonly eventBus: EventBus,
   ) {}
 
@@ -90,5 +93,16 @@ export class LobbyService {
 
   async getMissions(roomCode: string) {
     return await this.lobbyRepository.getWithMission(roomCode);
+  }
+
+  async endGame(id: string, payload: LobbyEndGameDTO) {
+    this.eventBus.publish(
+      new LobbyLogEvent({
+        action: LobbyLogAction.END,
+        lobby_id: id,
+        player_id: payload.player_id,
+      }),
+    );
+    return await this.missionRepository.softDeleteByLobbyId(id);
   }
 }

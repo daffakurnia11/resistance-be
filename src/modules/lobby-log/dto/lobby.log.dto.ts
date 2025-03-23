@@ -7,6 +7,7 @@ export enum LobbyLogAction {
   DISBAND = 'DISBAND',
   ASSIGN = 'ASSIGN',
   START = 'START',
+  END = 'END',
 }
 export class LobbyLogDTO {
   lobby_id: string;

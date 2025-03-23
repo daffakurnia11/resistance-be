@@ -138,4 +138,17 @@ export class MissionRepository implements MissionRepositoryInterface {
   async getManyByWhere(where: Prisma.MissionWhereInput): Promise<Mission[]> {
     return await this.prismaService.mission.findMany({ where });
   }
+
+  async softDeleteByLobbyId(lobbyId: string): Promise<Prisma.BatchPayload> {
+    const results = await this.prismaService.mission.updateMany({
+      where: {
+        lobby_id: lobbyId,
+      },
+      data: {
+        deleted_at: new Date(),
+      },
+    });
+
+    return Promise.resolve(results);
+  }
 }

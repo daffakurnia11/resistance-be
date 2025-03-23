@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger/dist/decorators/api-body.decorator';
 import { LobbyService } from '../service/lobby.service';
-import { CreateLobbyDTO } from '../dto/lobby.dto';
+import { CreateLobbyDTO, LobbyEndGameDTO } from '../dto/lobby.dto';
 
 @Controller('lobby')
 export class LobbyController {
@@ -61,6 +61,18 @@ export class LobbyController {
   async delete(@Param('id') id: string) {
     try {
       return await this.lobbyService.delete(id);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  @Post(':id/end')
+  @ApiBody({ type: LobbyEndGameDTO })
+  @UsePipes()
+  async endGame(@Param('id') id: string, @Body() payload: LobbyEndGameDTO) {
+    try {
+      return await this.lobbyService.endGame(id, payload);
     } catch (err) {
       console.error(err);
       throw err;

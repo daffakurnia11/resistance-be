@@ -12,3 +12,10 @@ export class LobbyCreateDTO {
   id: string;
   room_code: string;
 }
+
+export class LobbyEndGameDTO {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  player_id: string;
+}
