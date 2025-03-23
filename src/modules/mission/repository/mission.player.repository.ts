@@ -14,6 +14,7 @@ export class MissionPlayerRepository
     return this.prismaService.missionPlayer.findMany({
       where: {
         mission_id: missionId,
+        deleted_at: null,
       },
     });
   }
