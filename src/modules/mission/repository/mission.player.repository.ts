@@ -37,8 +37,8 @@ export class MissionPlayerRepository
       where: {
         mission_id: missionId,
         player_id: payload.player_id,
+        deleted_at: null,
       },
-      select: { id: true },
     });
 
     if (!missionPlayer) return null;

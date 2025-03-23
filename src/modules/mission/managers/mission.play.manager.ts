@@ -7,8 +7,11 @@ import { MissionLogEvent } from '@src/modules/mission-log/events/lobby.log.event
 import { MissionLogAction } from '@src/modules/mission-log/dto/mission.log.dto';
 import { MISSION_DI } from '../di/mission.di';
 import { MissionRepositoryInterface } from '../interface/mission.repository.interface';
-import { MissionEnum } from '@prisma/client';
-import { MissionPlayerRelationed } from '../types/mission.type';
+import { MissionEnum, MissionStatusEnum } from '@prisma/client';
+import {
+  MissionPlayerRelationed,
+  MissionRelationed,
+} from '../types/mission.type';
 
 @Injectable()
 export class MissionPlayManager {
@@ -44,6 +47,7 @@ export class MissionPlayManager {
 
       // Check if all mission players state are not null
       if (missionPlayers.every((player) => player.state !== null)) {
+        await this.updateNextMission(mission!);
         this.eventBus.publish(
           new MissionLogEvent({
             status: MissionLogAction.CLOSED,
@@ -66,6 +70,25 @@ export class MissionPlayManager {
         }
       }
       return Promise.resolve(result);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  async updateNextMission(mission: MissionRelationed): Promise<void> {
+    try {
+      const currentMissionNumber = mission.name?.split(' ')[1];
+      const nextMissionNumber = parseInt(currentMissionNumber!) + 1;
+      const nextMission = await this.missionRepo.getOneRelationedByWhere({
+        name: `Mission ${nextMissionNumber}`,
+      });
+
+      if (nextMission) {
+        await this.missionRepo.updateMissionStatus(
+          nextMission.id,
+          MissionStatusEnum.ASSIGNING,
+        );
+      }
     } catch (err) {
       return Promise.reject(err);
     }
