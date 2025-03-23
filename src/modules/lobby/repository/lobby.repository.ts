@@ -24,6 +24,7 @@ export class LobbyRepository {
     return await this.prismaService.lobby.findUnique({
       where: { room_code: roomCode },
       include: {
+        players: true,
         missions: {
           include: {
             leader: {
