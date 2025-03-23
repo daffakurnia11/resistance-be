@@ -10,7 +10,7 @@ export class PlayerRoleGeneratorService {
   protected readonly logger = new Logger(PlayerRoleGeneratorService.name);
 
   async execute(lobbyId: string): Promise<void> {
-    let players = await this.repository.findManyByWhere({
+    const players: Player[] = await this.repository.findManyByWhere({
       lobby_id: lobbyId,
       deleted_at: null,
     });
@@ -24,21 +24,45 @@ export class PlayerRoleGeneratorService {
       throw new BadRequestException(`Minimum 5 players in lobby ${lobbyId}`);
     }
 
-    players = this.sort(players);
+    const generateRandomIndices = (length: number): number[] => {
+      const indices = Array.from({ length }, (_, i) => i);
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+      return indices;
+    };
 
-    const playerWithRoles = this.defineRoles(players);
+    const randomIndices = generateRandomIndices(players.length);
+    const sortedPlayer: (Player & { index: number })[] = this.sort(
+      players,
+      randomIndices,
+    );
+
+    const playerWithRoles = this.defineRoles(sortedPlayer);
 
     await this.repository.bulkAssignRoles(playerWithRoles);
   }
 
-  protected sort(players: Player[]): Player[] {
-    return players.sort((prev, next) => prev.id.localeCompare(next.id));
+  protected sort(
+    players: Player[],
+    randomIndices: number[],
+  ): (Player & { index: number })[] {
+    const sorted = players.sort((prev, next) => prev.id.localeCompare(next.id));
+
+    return sorted.map((player, index) => ({
+      ...player,
+      index: randomIndices[index],
+    }));
   }
 
-  protected defineRoles(players: Player[]): PlayerWithRoleType[] {
-    return players.map((each, index) => ({
+  protected defineRoles(
+    players: (Player & { index: number })[],
+  ): PlayerWithRoleType[] {
+    return players.map((each) => ({
       ...each,
-      role: index % 2 === 1 ? PlayerRoleEnum.SPY : PlayerRoleEnum.RESISTANCE,
+      role:
+        each.index % 2 === 1 ? PlayerRoleEnum.SPY : PlayerRoleEnum.RESISTANCE,
     }));
   }
 }
