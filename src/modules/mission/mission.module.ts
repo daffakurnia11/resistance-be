@@ -18,6 +18,7 @@ import { MissionVoteRepository } from './repository/mission.vote.repository';
 import { MISSION_PLAYER_DI } from './di/mission.player.di';
 import { MissionPlayerRepository } from './repository/mission.player.repository';
 import { MissionPlayManager } from './managers/mission.play.manager';
+import { LobbyRepository } from '../lobby/repository/lobby.repository';
 
 const modules = [PrismaModule, CqrsModule];
 
@@ -28,6 +29,7 @@ const repositories: Provider[] = [
   { provide: MISSION_DI, useClass: MissionRepository },
   { provide: MISSION_VOTE_DI, useClass: MissionVoteRepository },
   { provide: MISSION_PLAYER_DI, useClass: MissionPlayerRepository },
+  LobbyRepository,
 ];
 
 const services: Provider[] = [MissionService];
@@ -38,7 +40,7 @@ const managers = [
   MissionVoteManager,
   MissionAssignManager,
   MissionResultManager,
-  MissionPlayManager
+  MissionPlayManager,
 ];
 
 const eventHandlers: Provider[] = [MissionUpdatedEventHandler];

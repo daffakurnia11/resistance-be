@@ -19,11 +19,12 @@ enum PlayerRoleEnum {
 }
 
 model Lobby {
-  id         String     @id @default(uuid()) @db.Uuid
-  created_at DateTime   @default(now()) @db.Timestamptz(6)
-  updated_at DateTime   @updatedAt @db.Timestamptz(6)
-  deleted_at DateTime?  @db.Timestamptz(6) // Nullable
-  room_code  String     @unique @db.Text
+  id         String          @id @default(uuid()) @db.Uuid
+  created_at DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at DateTime        @updatedAt @db.Timestamptz(6)
+  deleted_at DateTime?       @db.Timestamptz(6) // Nullable
+  room_code  String          @unique @db.Text
+  winner     PlayerRoleEnum?
   players    Player[]
   lobby_logs LobbyLog[]
   missions   Mission[]

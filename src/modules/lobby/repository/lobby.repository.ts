@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { LobbyCreateDTO } from '../dto/lobby.dto';
-import { Prisma } from '@prisma/client';
+import { PlayerRoleEnum, Prisma } from '@prisma/client';
 
 @Injectable()
 export class LobbyRepository {
@@ -85,6 +85,13 @@ export class LobbyRepository {
     return await this.prismaService.lobby.update({
       where: { id },
       data: { deleted_at: new Date() },
+    });
+  }
+
+  async updateWinner(lobby_id: string, winner: PlayerRoleEnum) {
+    return await this.prismaService.lobby.update({
+      where: { id: lobby_id },
+      data: { winner },
     });
   }
 }
